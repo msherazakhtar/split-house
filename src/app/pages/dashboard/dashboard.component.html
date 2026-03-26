@@ -1,0 +1,81 @@
+<div class="dashboard-page">
+  <!-- Navbar -->
+  <nav class="dash-nav">
+    <div class="nav-container">
+      <div class="nav-brand">
+        <span class="logo-icon">⬡</span>
+        <span class="logo-text">SplitHouse</span>
+      </div>
+      <div class="nav-actions">
+        <span class="greeting">Hi, {{ username() }}</span>
+        <button class="btn-logout" (click)="logout()">Logout</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="dash-main">
+    <div class="main-header">
+      <div class="header-titles">
+        <h1 class="page-title">Your Houses</h1>
+        <p class="page-subtitle">Manage your shared expenses and groups.</p>
+      </div>
+      <button class="btn-primary">
+        <span class="icon">+</span> Create New House
+      </button>
+    </div>
+
+    <!-- Loading State -->
+    <div class="dash-loader" *ngIf="isLoading()">
+      <div class="spinner"></div>
+      <p>Loading your houses...</p>
+    </div>
+
+    <!-- Error State -->
+    <div class="dash-error" *ngIf="error() && !isLoading()">
+      <div class="error-icon">⚠️</div>
+      <p>{{ error() }}</p>
+      <button class="btn-outline" (click)="ngOnInit()">Try Again</button>
+    </div>
+
+    <!-- Empty State -->
+    <div class="dash-empty" *ngIf="!isLoading() && !error() && groups().length === 0">
+      <div class="empty-icon">🏠</div>
+      <h3>No houses yet</h3>
+      <p>Create a home or group to start splitting expenses.</p>
+      <button class="btn-primary">Create Your First House</button>
+    </div>
+
+    <!-- Groups Grid -->
+    <div class="groups-grid" *ngIf="!isLoading() && !error() && groups().length > 0">
+      
+      <!-- Group Card -->
+      <div class="group-card" *ngFor="let group of groups()">
+        <div class="card-header">
+          <div class="group-avatar">{{ (group.name || group.title || 'H').charAt(0).toUpperCase() }}</div>
+          <div class="group-info">
+            <h3 class="group-title">{{ group.name || group.title || ('House #' + group.id) }}</h3>
+            <span class="group-meta">House Group</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <p class="group-desc" *ngIf="group.description">{{ group.description }}</p>
+          <div class="group-stats">
+            <div class="stat">
+              <span class="stat-lbl">Active Members</span>
+              <span class="stat-val">--</span>
+            </div>
+            <div class="stat">
+              <span class="stat-lbl">Total Expenses</span>
+              <span class="stat-val">--</span>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer">
+          <button class="btn-view">View House →</button>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>

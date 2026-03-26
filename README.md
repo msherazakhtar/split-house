@@ -1,59 +1,84 @@
-# SplitHouse
+<div align="center">
+  <br />
+  <img src="https://img.shields.io/badge/Angular-DD0031?style=for-the-badge&logo=angular&logoColor=white" />
+  <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" />
+  <img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white" />
+  <br />
+  
+  <h1>⬡ SplitHouse</h1>
+  <p><strong>Expense Tracking, Reimagined.</strong></p>
+  <p>Split bills. Zero stress. Make shared living fair, one expense at a time.</p>
+  <br />
+</div>
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.3.
+<hr />
 
-## Development server
+## 📖 About SplitHouse
 
-To start a local development server, run:
+SplitHouse is a modern, minimalistic, and beautifully designed web application for managing shared living expenses. Track everything from rent to groceries, split costs fairly among housemates, and settle up safely—all in one place.
 
-```bash
-ng serve
-```
+Built with **Angular**, this repository contains the **Frontend** application for the SplitHouse project. The backend (Spring Boot) powers the RESTful API, while this frontend focuses on delivering a seamless, dark-themed, glassmorphic user experience.
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+<br />
 
-## Code scaffolding
+## ✨ Core Features
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+- **⚡ Instant Splits**: Split any expense in seconds—equal splits, custom amounts, or percentage-based.
+- **🏠 House Groups**: Create dedicated spaces for roommates or shared living arrangements.
+- **🔔 Real-time Sync**: Every expense updates seamlessly across all members using a robust Spring Boot backend.
+- **💳 Settlement Tracking**: See exact balances. Know who owes what at a glance with color-coded positive and negative settlement indicators.
+- **🔒 Secure Authentication**: Powered by seamless JWT authentication and seamless interceptors for robust data security.
 
-```bash
-ng generate component component-name
-```
+<br />
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## 🎨 UI / Aesthetics
+The application features a modern "Midnight" design system:
+- **Background Palette**: Rich dark shades ranging from `#0a0a0f` to `#13131f`.
+- **Primary Accent**: A vibrant violet (`#6c63ff`) and soft lavender (`#a78bfa`) pairing for glows, buttons, and visual hierarchy.
+- **Typography**: [Syne](https://fonts.google.com/specimen/Syne) for bold, dynamic headlines and [Inter](https://fonts.google.com/specimen/Inter) for clean, readable interface text.
+- **Effects**: Beautiful CSS-only backdrop blurs, floating mockup elements, structural gradients, and subtle micro-animations on hover interactions.
 
-```bash
-ng generate --help
-```
+<br />
 
-## Building
+## 🚀 Getting Started
 
-To build the project run:
+### Prerequisites
+- [Node.js](https://nodejs.org/) (v18+)
+- [Angular CLI](https://angular.io/cli) (v17+)
 
-```bash
-ng build
-```
+### Installation
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/your-username/split-house.git
+   cd split-house
+   ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+2. **Install frontend dependencies:**
+   ```bash
+   npm install
+   ```
 
-## Running unit tests
+3. **Configure Environments:**
+   - The application relies on `src/environments/environment.ts` for local development (defaults to `http://localhost:5555`).
+   - When building for production, Angular uses `fileReplacements` to seamlessly deploy `src/environments/environment.production.ts`.
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+4. **Run the Development Server:**
+   ```bash
+   npm run start
+   ```
+   Navigate your browser to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
 
-```bash
-ng test
-```
+<br />
 
-## Running end-to-end tests
+## 🛠️ Technology Stack
+- **Framework**: Angular 21
+- **Language**: TypeScript
+- **Styling**: Vanilla CSS (Custom properties, Flexbox/Grid, Glassmorphism, CSS Animations)
+- **State/Auth**: LocalStorage & JWT HTTP Interceptors
+- **Backend (External)**: Spring Boot / Java / REST APIs
 
-For end-to-end (e2e) testing, run:
+<hr />
 
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+<div align="center">
+  <p>Built with ❤️ for hassle-free shared living.</p>
+</div>

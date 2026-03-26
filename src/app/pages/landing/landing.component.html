@@ -1,0 +1,207 @@
+<section class="landing">
+
+  <!-- ===== NAVBAR ===== -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="nav-logo">
+        <span class="logo-icon">⬡</span>
+        <span class="logo-text">SplitHouse</span>
+      </div>
+      <ul class="nav-links">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#how-it-works">How It Works</a></li>
+        <li><a href="#stats">Stats</a></li>
+      </ul>
+      <div class="nav-actions">
+        <a routerLink="/login" class="btn btn-ghost">Login</a>
+        <a routerLink="/login" class="btn btn-primary">Get Started</a>
+      </div>
+      <!-- Mobile hamburger -->
+      <div class="nav-mobile-cta">
+        <a routerLink="/login" class="btn btn-primary btn-sm">Login</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero">
+    <div class="hero-bg-orb hero-orb-1"></div>
+    <div class="hero-bg-orb hero-orb-2"></div>
+    <div class="hero-bg-grid"></div>
+
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="badge-dot"></span>
+        Expense Tracking, Reimagined
+      </div>
+      <h1 class="hero-title">
+        Split bills.<br />
+        <span class="hero-title-accent">Zero stress.</span>
+      </h1>
+      <p class="hero-subtitle">
+        SplitHouse makes shared living simple. Track expenses, split costs fairly,
+        and settle up with your housemates — all in one clean, beautiful app.
+      </p>
+      <div class="hero-actions">
+        <a routerLink="/login" class="btn btn-primary btn-lg">
+          Get Started Free
+          <span class="btn-arrow">→</span>
+        </a>
+        <a href="#how-it-works" class="btn btn-outline btn-lg">See How It Works</a>
+      </div>
+
+      <!-- Mini stats in hero -->
+      <div class="hero-stats">
+        <div class="hero-stat" *ngFor="let stat of stats">
+          <span class="hero-stat-value">{{ stat.value }}</span>
+          <span class="hero-stat-label">{{ stat.label }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hero visual card mockup -->
+    <div class="hero-visual">
+      <div class="mockup-card">
+        <div class="mockup-header">
+          <span class="mockup-title">This Month</span>
+          <span class="mockup-badge">August</span>
+        </div>
+        <div class="mockup-amount">$12,480</div>
+        <div class="mockup-label">Total Shared Expenses</div>
+        <div class="mockup-divider"></div>
+        <div class="mockup-members">
+          <div class="mockup-member">
+            <div class="avatar av-1">A</div>
+            <div class="member-info">
+              <span class="member-name">Ali</span>
+              <span class="member-owes positive">+$2,240</span>
+            </div>
+          </div>
+          <div class="mockup-member">
+            <div class="avatar av-2">S</div>
+            <div class="member-info">
+              <span class="member-name">Sara</span>
+              <span class="member-owes negative">-$1,100</span>
+            </div>
+          </div>
+          <div class="mockup-member">
+            <div class="avatar av-3">R</div>
+            <div class="member-info">
+              <span class="member-name">Raza</span>
+              <span class="member-owes negative">-$1,140</span>
+            </div>
+          </div>
+        </div>
+        <a routerLink="/login" class="mockup-cta">Settle Up →</a>
+      </div>
+
+      <div class="floating-pill pill-1">🛒 Groceries · $800</div>
+      <div class="floating-pill pill-2">⚡ Electricity · $1,200</div>
+      <div class="floating-pill pill-3">🌐 Internet · $1,500</div>
+    </div>
+  </section>
+
+  <!-- ===== FEATURES ===== -->
+  <section class="features section" id="features">
+    <div class="section-container">
+      <div class="section-tag">Features</div>
+      <h2 class="section-title">Everything you need to<br /><span class="accent">split smarter</span></h2>
+      <p class="section-subtitle">
+        Designed for the way people actually share expenses — simple, fair, and transparent.
+      </p>
+
+      <div class="features-grid">
+        <div class="feature-card" *ngFor="let feature of features">
+          <div class="feature-icon">{{ feature.icon }}</div>
+          <h3 class="feature-title">{{ feature.title }}</h3>
+          <p class="feature-description">{{ feature.description }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== HOW IT WORKS ===== -->
+  <section class="how-it-works section" id="how-it-works">
+    <div class="section-container">
+      <div class="section-tag">How It Works</div>
+      <h2 class="section-title">Up & running in <span class="accent">4 steps</span></h2>
+      <p class="section-subtitle">No complicated setup. Just create, invite, and start splitting.</p>
+
+      <div class="steps-container">
+        <div class="step" *ngFor="let step of steps; let last = last">
+          <div class="step-number">{{ step.number }}</div>
+          <div class="step-content">
+            <h3 class="step-title">{{ step.title }}</h3>
+            <p class="step-description">{{ step.description }}</p>
+          </div>
+          <div class="step-connector" *ngIf="!last"></div>
+        </div>
+      </div>
+
+      <div class="steps-cta">
+        <a routerLink="/login" class="btn btn-primary btn-lg">
+          Start Splitting Now
+          <span class="btn-arrow">→</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== STATS SECTION ===== -->
+  <section class="stats-section section" id="stats">
+    <div class="section-container">
+      <div class="stats-inner">
+        <div class="stats-text">
+          <div class="section-tag">Trusted By Many</div>
+          <h2 class="section-title">Built for real<br /><span class="accent">shared living</span></h2>
+          <p class="section-subtitle">
+            Thousands of housemates use SplitHouse every day to keep their finances fair and transparent.
+          </p>
+          <a routerLink="/login" class="btn btn-primary btn-lg" style="margin-top: 1.5rem;">
+            Join Them Free →
+          </a>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-card" *ngFor="let stat of stats">
+            <div class="stat-value">{{ stat.value }}</div>
+            <div class="stat-label">{{ stat.label }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CTA BANNER ===== -->
+  <section class="cta-banner">
+    <div class="cta-orb cta-orb-1"></div>
+    <div class="cta-orb cta-orb-2"></div>
+    <div class="cta-content">
+      <h2 class="cta-title">Ready to simplify<br />shared expenses?</h2>
+      <p class="cta-subtitle">Join SplitHouse today and make shared living fair for everyone.</p>
+      <a routerLink="/login" class="btn btn-primary btn-xl">
+        Get Started — It's Free
+        <span class="btn-arrow">→</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-logo">
+        <span class="logo-icon">⬡</span>
+        <span class="logo-text">SplitHouse</span>
+      </div>
+      <p class="footer-tagline">Making shared living fair, one expense at a time.</p>
+      <div class="footer-bottom">
+        <span class="footer-copy">© 2026 SplitHouse. All rights reserved.</span>
+        <div class="footer-links">
+          <a href="#">Privacy</a>
+          <a href="#">Terms</a>
+          <a href="#">Contact</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</section>

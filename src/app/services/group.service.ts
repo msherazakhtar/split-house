@@ -22,7 +22,14 @@ export class GroupService {
   constructor(private http: HttpClient) {}
 
   getGroupsByUser(userId: number | string): Observable<Group[]> {
-    // Making a call to /groups?userId=X
     return this.http.get<Group[]>(`${this.apiUrl}?userId=${userId}`);
+  }
+
+  createGroup(payload: any): Observable<Group> {
+    return this.http.post<Group>(this.apiUrl, payload);
+  }
+
+  deleteGroup(groupId: number | string): Observable<any> {
+    return this.http.delete<any>(`${this.apiUrl}?groupId=${groupId}`);
   }
 }

@@ -1,6 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, tap } from 'rxjs';
+import { Observable, tap, switchMap, map, of } from 'rxjs';
 import { environment } from '../../environments/environment';
 
 @Injectable({
@@ -8,10 +8,12 @@ import { environment } from '../../environments/environment';
 })
 export class AuthService {
   private apiUrl = `${environment.apiUrl}/auth/login`;
+  private userApiUrl = `${environment.apiUrl}/user`;
   
   isAuthenticated = signal(false);
   currentUserId = signal<number | string | null>(null);
   currentUserData = signal<any>(null);
+  userDetails = signal<any>(null); // Full database user profile
 
   constructor(private http: HttpClient) {
     this.checkTokenAndSetState();
@@ -22,10 +24,19 @@ export class AuthService {
     if (token) {
       this.isAuthenticated.set(true);
       this.decodeAndSetUser(token);
+
+      // Load persistent user profile
+      const storedProfile = localStorage.getItem('user_profile');
+      if (storedProfile) {
+        try {
+          this.userDetails.set(JSON.parse(storedProfile));
+        } catch(e) {}
+      }
     } else {
       this.isAuthenticated.set(false);
       this.currentUserId.set(null);
       this.currentUserData.set(null);
+      this.userDetails.set(null);
     }
   }
 
@@ -52,35 +63,49 @@ export class AuthService {
 
   login(username: string, password: string): Observable<any> {
     return this.http.post<any>(this.apiUrl, { username, password }).pipe(
-      tap({
-        next: (response) => {
-          let token = null;
-          if (typeof response === 'string') {
-            token = response;
-          } else if (response && response.token) {
-            token = response.token;
-          } else if (response && response.jwt) {
-            token = response.jwt;
-          } else if (response && response.accessToken) {
-            token = response.accessToken;
-          }
-          
-          if (token) {
-            localStorage.setItem('jwt_token', token);
-            this.checkTokenAndSetState();
-          } else {
-            console.warn('Login succeeded but no token was found in the response.', response);
-          }
+      switchMap(response => {
+        let token = null;
+        if (typeof response === 'string') {
+          token = response;
+        } else if (response && response.token) {
+          token = response.token;
+        } else if (response && response.jwt) {
+          token = response.jwt;
+        } else if (response && response.accessToken) {
+          token = response.accessToken;
         }
+        
+        if (token) {
+          localStorage.setItem('jwt_token', token);
+          this.checkTokenAndSetState();
+
+          const userId = this.currentUserId();
+          if (userId) {
+            // Fetch the user details immediately and hold the login pipeline until done
+            return this.http.get<any>(`${this.userApiUrl}/${userId}`).pipe(
+              tap(profile => {
+                this.userDetails.set(profile);
+                localStorage.setItem('user_profile', JSON.stringify(profile));
+              }),
+              map(() => response) // Return the original login response
+            );
+          }
+        } else {
+          console.warn('Login succeeded but no token was found in the response.', response);
+        }
+
+        return of(response);
       })
     );
   }
 
   logout() {
     localStorage.removeItem('jwt_token');
+    localStorage.removeItem('user_profile');
     this.isAuthenticated.set(false);
     this.currentUserId.set(null);
     this.currentUserData.set(null);
+    this.userDetails.set(null);
   }
 
   getToken(): string | null {

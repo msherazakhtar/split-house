@@ -37,4 +37,4 @@ jobs:
           local-dir: ./dist/split-house/browser/ 
           
           # The remote directory on Hostinger where the files will be placed
-          server-dir: /splithouse/
+          server-dir: /public_html/splithouse/

@@ -9,7 +9,7 @@ export const routes: Routes = [
       ),
   },
   {
-    path: 'login',
+    path: 'protectedLoginBeta',
     loadComponent: () =>
       import('./pages/login/login.component').then(
         (m) => m.LoginComponent

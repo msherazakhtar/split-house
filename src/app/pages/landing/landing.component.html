@@ -13,12 +13,11 @@
         <li><a href="#stats">Stats</a></li>
       </ul>
       <div class="nav-actions">
-        <a routerLink="/login" class="btn btn-ghost">Login</a>
-        <a routerLink="/login" class="btn btn-primary">Get Started</a>
+        <a href="#waitlist" class="btn btn-primary">Join Waitlist</a>
       </div>
       <!-- Mobile hamburger -->
       <div class="nav-mobile-cta">
-        <a routerLink="/login" class="btn btn-primary btn-sm">Login</a>
+        <a href="#waitlist" class="btn btn-primary btn-sm">Join</a>
       </div>
     </div>
   </nav>
@@ -43,8 +42,8 @@
         and settle up with your housemates — all in one clean, beautiful app.
       </p>
       <div class="hero-actions">
-        <a routerLink="/login" class="btn btn-primary btn-lg">
-          Get Started Free
+        <a href="#waitlist" class="btn btn-primary btn-lg">
+          Join the Waitlist
           <span class="btn-arrow">→</span>
         </a>
         <a href="#how-it-works" class="btn btn-outline btn-lg">See How It Works</a>
@@ -92,7 +91,7 @@
             </div>
           </div>
         </div>
-        <a routerLink="/login" class="mockup-cta">Settle Up →</a>
+        <a href="#waitlist" class="mockup-cta">Settle Up →</a>
       </div>
 
       <div class="floating-pill pill-1">🛒 Groceries · $800</div>
@@ -139,8 +138,8 @@
       </div>
 
       <div class="steps-cta">
-        <a routerLink="/login" class="btn btn-primary btn-lg">
-          Start Splitting Now
+        <a href="#waitlist" class="btn btn-primary btn-lg">
+          Join the Waitlist
           <span class="btn-arrow">→</span>
         </a>
       </div>
@@ -152,13 +151,13 @@
     <div class="section-container">
       <div class="stats-inner">
         <div class="stats-text">
-          <div class="section-tag">Trusted By Many</div>
+          <div class="section-tag">Zero Compromises</div>
           <h2 class="section-title">Built for real<br /><span class="accent">shared living</span></h2>
           <p class="section-subtitle">
-            Thousands of housemates use SplitHouse every day to keep their finances fair and transparent.
+            Designed from the ground up to keep shared finances fair, transparent, and completely stress-free.
           </p>
-          <a routerLink="/login" class="btn btn-primary btn-lg" style="margin-top: 1.5rem;">
-            Join Them Free →
+          <a href="#waitlist" class="btn btn-primary btn-lg" style="margin-top: 1.5rem;">
+            Join the Waitlist →
           </a>
         </div>
         <div class="stats-grid">
@@ -171,17 +170,44 @@
     </div>
   </section>
 
-  <!-- ===== CTA BANNER ===== -->
-  <section class="cta-banner">
+  <!-- ===== WAITLIST SECTION ===== -->
+  <section class="cta-banner" id="waitlist">
     <div class="cta-orb cta-orb-1"></div>
     <div class="cta-orb cta-orb-2"></div>
     <div class="cta-content">
       <h2 class="cta-title">Ready to simplify<br />shared expenses?</h2>
-      <p class="cta-subtitle">Join SplitHouse today and make shared living fair for everyone.</p>
-      <a routerLink="/login" class="btn btn-primary btn-xl">
-        Get Started — It's Free
-        <span class="btn-arrow">→</span>
-      </a>
+      <p class="cta-subtitle">Join the waitlist today to get early access when we launch.</p>
+      
+      <form class="waitlist-form" (submit)="submitWaitlist($event)">
+        <div class="waitlist-input-group" *ngIf="waitlistState() !== 'success'">
+          <input 
+            type="email" 
+            [(ngModel)]="email" 
+            name="email" 
+            placeholder="Enter your email address"
+            class="waitlist-input"
+            required
+            [disabled]="waitlistState() === 'loading'"
+          />
+          <button type="submit" class="btn btn-primary waitlist-btn" [disabled]="waitlistState() === 'loading'">
+            <span *ngIf="waitlistState() !== 'loading'">Join Waitlist</span>
+            <span *ngIf="waitlistState() === 'loading'">Joining...</span>
+          </button>
+        </div>
+        
+        <div class="waitlist-success" *ngIf="waitlistState() === 'success'">
+          <div class="success-icon">✓</div>
+          <p style="margin-bottom: 0;">Your email has been added to the waitlist!</p>
+          <p style="margin-bottom: 1rem;">Follow our WhatsApp channel to get the latest updates about the launch.</p>
+          <a href="https://whatsapp.com/channel/0029Vb6Ds1K11ulT71vtIF0S" target="_blank" class="btn btn-primary" style="background:#25D366;border:none;box-shadow:none;">
+            Join WhatsApp Channel
+          </a>
+        </div>
+        
+        <div class="waitlist-error" *ngIf="waitlistState() === 'error'">
+          {{ waitlistErrorMsg }}
+        </div>
+      </form>
     </div>
   </section>
 

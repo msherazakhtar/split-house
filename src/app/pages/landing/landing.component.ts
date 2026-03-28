@@ -1,10 +1,11 @@
 import { Component, OnInit, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-landing',
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, FormsModule],
   templateUrl: './landing.component.html',
   styleUrl: './landing.component.css',
 })
@@ -52,10 +53,10 @@ export class LandingComponent implements OnInit, OnDestroy {
   ];
 
   stats = [
-    { value: '10K+', label: 'Active Users' },
-    { value: '$2M+', label: 'Expenses Tracked' },
-    { value: '500+', label: 'Happy Houses' },
-    { value: '99.9%', label: 'Uptime' },
+    { value: '100%', label: 'Transparent' },
+    { value: '0', label: 'Hidden Fees' },
+    { value: '∞', label: 'Unlimited Groups' },
+    { value: '24/7', label: 'Cloud Sync' },
   ];
 
   steps = [
@@ -89,5 +90,41 @@ export class LandingComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (this.interval) clearInterval(this.interval);
+  }
+
+  // Waitlist State
+  email = '';
+  waitlistState = signal<'idle' | 'loading' | 'success' | 'error'>('idle');
+  waitlistErrorMsg = '';
+
+  async submitWaitlist(event: Event) {
+    event.preventDefault();
+    if (!this.email) return;
+
+    this.waitlistState.set('loading');
+    this.waitlistErrorMsg = '';
+
+    const webhookUrl = 'https://script.google.com/macros/s/AKfycbzaWqcggCyv6yHi11Fl_FVkwtTcXpNb1dTWbQ4_aP_Ld5qszU7iQVnZj1vMHHa4X22-DQ/exec';
+    
+    try {
+      // Fire and forget to avoid being blocked by Google Script redirects/CORS
+      fetch(webhookUrl, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {
+          'Content-Type': 'text/plain;charset=utf-8'
+        },
+        body: JSON.stringify({ email: this.email })
+      });
+
+      // Update state immediately to ensure the user sees the success message
+      this.waitlistState.set('success');
+      this.email = '';
+
+    } catch (err) {
+      console.error('Waitlist submission error:', err);
+      this.waitlistState.set('error');
+      this.waitlistErrorMsg = 'Failed to submit. Please try again later.';
+    }
   }
 }

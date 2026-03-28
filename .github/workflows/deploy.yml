@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - master
   workflow_dispatch: # Allows you to manually trigger the deployment from the GitHub Actions tab
 
 jobs:

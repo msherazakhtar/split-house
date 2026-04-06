@@ -1,24 +1,71 @@
 <div class="portal-layout">
-  
-  <!-- Sidebar -->
+
+  <!-- Mobile Nav Overlay -->
+  <div class="mobile-nav-overlay" [class.open]="isMobileNavOpen()" (click)="isMobileNavOpen.set(false)"></div>
+
+  <!-- Mobile Nav Drawer -->
+  <div class="mobile-nav-drawer" [class.open]="isMobileNavOpen()">
+    <div class="drawer-brand">
+      <svg class="logo-icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 2L20.66 7V17L12 22L3.34 17V7L12 2Z"/>
+      </svg>
+      <span class="logo-text">SplitHouse</span>
+    </div>
+
+    <nav class="drawer-nav">
+      <a class="nav-item" [class.active]="activeTab() === 'groups'" (click)="setActiveTab('groups')">
+        <span class="nav-icon"><lucide-icon [img]="House" [size]="18" [strokeWidth]="2"></lucide-icon></span> Groups
+      </a>
+      <a class="nav-item" [class.active]="activeTab() === 'expenses'" (click)="setActiveTab('expenses')">
+        <span class="nav-icon"><lucide-icon [img]="Receipt" [size]="18" [strokeWidth]="2"></lucide-icon></span> Expenses
+      </a>
+      <a class="nav-item" [class.active]="activeTab() === 'settlements'" (click)="setActiveTab('settlements')">
+        <span class="nav-icon"><lucide-icon [img]="Handshake" [size]="18" [strokeWidth]="2"></lucide-icon></span> Settlements
+      </a>
+      <a class="nav-item" [class.active]="activeTab() === 'settings'" (click)="setActiveTab('settings')">
+        <span class="nav-icon"><lucide-icon [img]="Settings" [size]="18" [strokeWidth]="2"></lucide-icon></span> Settings
+      </a>
+    </nav>
+
+    <div class="drawer-footer">
+      <div class="user-profile-sm">
+        <div class="user-avatar-sm">{{ username().charAt(0).toUpperCase() }}</div>
+        <div class="user-info-sm">
+          <span class="user-name-sm">{{ username() }}</span>
+          <span class="user-role-sm">Member</span>
+        </div>
+      </div>
+      <button class="btn-logout-icon" (click)="logout()" title="Logout">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+          <polyline points="16 17 21 12 16 7"></polyline>
+          <line x1="21" y1="12" x2="9" y2="12"></line>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Sidebar (desktop) -->
   <aside class="sidebar">
     <div class="sidebar-brand">
-      <span class="logo-icon">⬡</span>
+      <svg class="logo-icon" viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 2L20.66 7V17L12 22L3.34 17V7L12 2Z"/>
+      </svg>
       <span class="logo-text">SplitHouse</span>
     </div>
 
     <nav class="sidebar-nav">
       <a class="nav-item" [class.active]="activeTab() === 'groups'" (click)="setActiveTab('groups')">
-        <span class="nav-icon">🏠</span> Groups
+        <span class="nav-icon"><lucide-icon [img]="House" [size]="18" [strokeWidth]="2"></lucide-icon></span> Groups
       </a>
       <a class="nav-item" [class.active]="activeTab() === 'expenses'" (click)="setActiveTab('expenses')">
-        <span class="nav-icon">💸</span> Expenses
+        <span class="nav-icon"><lucide-icon [img]="Receipt" [size]="18" [strokeWidth]="2"></lucide-icon></span> Expenses
       </a>
       <a class="nav-item" [class.active]="activeTab() === 'settlements'" (click)="setActiveTab('settlements')">
-        <span class="nav-icon">🤝</span> Settlements
+        <span class="nav-icon"><lucide-icon [img]="Handshake" [size]="18" [strokeWidth]="2"></lucide-icon></span> Settlements
       </a>
       <a class="nav-item" [class.active]="activeTab() === 'settings'" (click)="setActiveTab('settings')">
-        <span class="nav-icon">⚙️</span> Settings
+        <span class="nav-icon"><lucide-icon [img]="Settings" [size]="18" [strokeWidth]="2"></lucide-icon></span> Settings
       </a>
     </nav>
 
@@ -40,9 +87,22 @@
     </div>
   </aside>
 
+  <!-- Mobile Top Bar -->
+  <header class="mobile-topbar">
+    <div class="mobile-topbar-brand">
+      <svg class="logo-icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 2L20.66 7V17L12 22L3.34 17V7L12 2Z"/>
+      </svg>
+      <span class="logo-text">SplitHouse</span>
+    </div>
+    <button class="btn-hamburger" (click)="toggleMobileNav()" [attr.aria-label]="isMobileNavOpen() ? 'Close menu' : 'Open menu'">
+      <lucide-icon [img]="isMobileNavOpen() ? X : Menu" [size]="22" [strokeWidth]="2"></lucide-icon>
+    </button>
+  </header>
+
   <!-- Main Content Area -->
   <main class="portal-main">
-    
+
     <!-- Groups View -->
     <div class="view-content" *ngIf="activeTab() === 'groups'">
       <div class="main-header">
@@ -63,14 +123,14 @@
 
       <!-- Error State -->
       <div class="dash-error" *ngIf="error() && !isLoading()">
-        <div class="error-icon">⚠️</div>
+        <div class="error-icon"><lucide-icon [img]="TriangleAlert" [size]="36" [strokeWidth]="1.5"></lucide-icon></div>
         <p>{{ error() }}</p>
         <button class="btn-outline" (click)="ngOnInit()">Try Again</button>
       </div>
 
       <!-- Empty State -->
       <div class="dash-empty" *ngIf="!isLoading() && !error() && groups().length === 0">
-        <div class="empty-icon">🏠</div>
+        <div class="empty-icon"><lucide-icon [img]="House" [size]="52" [strokeWidth]="1.2"></lucide-icon></div>
         <h3>No houses yet</h3>
         <p>Create a home or group to start splitting expenses.</p>
         <button class="btn-primary" (click)="openCreateModal()">Create Your First House</button>
@@ -78,7 +138,7 @@
 
       <!-- Groups Grid -->
       <div class="groups-grid" *ngIf="!isLoading() && !error() && groups().length > 0">
-        
+
         <!-- Group Card -->
         <div class="group-card" *ngFor="let group of groups()">
           <div class="card-header">
@@ -118,7 +178,8 @@
             </div>
           </div>
           <div class="card-footer">
-            <button class="btn-view">View House →</button>
+            <button class="btn-view" (click)="openGroupPanel($event, group)">View House →</button>
+            <button class="btn-add-member" (click)="openAddMemberModal($event, group)">+ Add Member</button>
           </div>
         </div>
 
@@ -127,7 +188,7 @@
 
     <!-- Placeholder for Other Modules -->
     <div class="view-content placeholder-view" *ngIf="activeTab() !== 'groups'">
-      <div class="empty-icon">🚧</div>
+      <div class="empty-icon"><lucide-icon [img]="Construction" [size]="52" [strokeWidth]="1.2"></lucide-icon></div>
       <h2 class="modal-title">Module Under Construction</h2>
       <p class="modal-subtitle">The <strong>{{ activeTab() | uppercase }}</strong> module is currently being built.</p>
     </div>
@@ -138,14 +199,14 @@
   <div class="modal-overlay" *ngIf="isCreateModalOpen()">
     <div class="modal-backdrop" (click)="closeCreateModal()"></div>
     <div class="modal-card">
-      
+
       <div class="modal-header">
         <div class="modal-icon-wrap" [class.edit-wrap]="groupToEdit()">
-          <span class="modal-icon">🏠</span>
+          <span class="modal-icon"><lucide-icon [img]="House" [size]="28" [strokeWidth]="1.8"></lucide-icon></span>
         </div>
         <button class="btn-close" (click)="closeCreateModal()">×</button>
       </div>
-      
+
       <div class="modal-body">
         <h2 class="modal-title">{{ groupToEdit() ? 'Edit House' : 'Create New House' }}</h2>
         <p class="modal-subtitle">
@@ -155,20 +216,20 @@
         <form (ngSubmit)="submitCreateGroup()">
           <div class="field">
             <label class="field-label" for="groupName">House Name</label>
-            <input 
+            <input
               id="groupName"
-              class="input-clean" 
-              type="text" 
-              placeholder="e.g. Flat 12 A, Miami Trip" 
-              [(ngModel)]="newGroupName" 
-              name="groupName" 
+              class="input-clean"
+              type="text"
+              placeholder="e.g. Flat 12 A, Miami Trip"
+              [(ngModel)]="newGroupName"
+              name="groupName"
               required
               autofocus
             />
           </div>
 
           <div class="modal-error" *ngIf="createError()">
-            <span>⚠️</span> {{ createError() }}
+            <lucide-icon [img]="TriangleAlert" [size]="14" [strokeWidth]="2"></lucide-icon> {{ createError() }}
           </div>
 
           <div class="modal-actions">
@@ -190,23 +251,23 @@
   <div class="modal-overlay" *ngIf="isDeleteModalOpen()">
     <div class="modal-backdrop" (click)="closeDeleteModal()"></div>
     <div class="modal-card modal-card-danger">
-      
+
       <div class="modal-header">
         <div class="modal-icon-wrap danger-wrap">
-          <span class="modal-icon">⚠️</span>
+          <span class="modal-icon"><lucide-icon [img]="TriangleAlert" [size]="28" [strokeWidth]="1.8"></lucide-icon></span>
         </div>
         <button class="btn-close" (click)="closeDeleteModal()">×</button>
       </div>
-      
+
       <div class="modal-body">
         <h2 class="modal-title text-danger">Delete House?</h2>
         <p class="modal-subtitle">
-          Are you sure you want to completely delete <strong>{{ getGroupToDeleteName() }}</strong>? 
+          Are you sure you want to completely delete <strong>{{ getGroupToDeleteName() }}</strong>?
           This action cannot be undone and will permanently remove all associated expenses and settlements.
         </p>
 
         <div class="modal-error" *ngIf="deleteError()">
-          <span>⚠️</span> {{ deleteError() }}
+          <lucide-icon [img]="TriangleAlert" [size]="14" [strokeWidth]="2"></lucide-icon> {{ deleteError() }}
         </div>
 
         <div class="modal-actions">
@@ -218,6 +279,177 @@
             </span>
           </button>
         </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Group Members Panel -->
+  <div class="panel-backdrop" [class.open]="isGroupPanelOpen()" (click)="closeGroupPanel()"></div>
+  <aside class="group-panel" [class.open]="isGroupPanelOpen()">
+
+    <div class="panel-header">
+      <div class="panel-group-identity">
+        <div class="panel-avatar">{{ (panelGroup()?.name || panelGroup()?.title || 'H').charAt(0).toUpperCase() }}</div>
+        <div>
+          <h2 class="panel-group-name">{{ panelGroup()?.name || panelGroup()?.title || 'House' }}</h2>
+          <span class="panel-member-count">
+            {{ panelMembers().length }} member{{ panelMembers().length !== 1 ? 's' : '' }}
+          </span>
+        </div>
+      </div>
+      <button class="btn-panel-close" (click)="closeGroupPanel()" title="Close">
+        <lucide-icon [img]="X" [size]="18" [strokeWidth]="2.5"></lucide-icon>
+      </button>
+    </div>
+
+    <div class="panel-body">
+
+      <!-- Loading -->
+      <div class="panel-loading" *ngIf="isPanelLoading()">
+        <div class="spinner"></div>
+      </div>
+
+      <!-- Error -->
+      <div class="panel-state-msg panel-state-error" *ngIf="panelError() && !isPanelLoading()">
+        <lucide-icon [img]="TriangleAlert" [size]="28" [strokeWidth]="1.5"></lucide-icon>
+        <p>{{ panelError() }}</p>
+        <button class="btn-outline" (click)="panelGroup() && loadGroupMembers(panelGroup()!)">Retry</button>
+      </div>
+
+      <!-- Empty -->
+      <div class="panel-state-msg" *ngIf="!isPanelLoading() && !panelError() && panelMembers().length === 0">
+        <lucide-icon [img]="Users" [size]="40" [strokeWidth]="1.2"></lucide-icon>
+        <p>No members yet</p>
+        <span>Add the first member to get started.</span>
+      </div>
+
+      <!-- Members List -->
+      <div class="members-list" *ngIf="!isPanelLoading() && !panelError() && panelMembers().length > 0">
+        <div class="member-item" *ngFor="let member of panelMembers()">
+
+          <!-- Member Row -->
+          <div class="member-row" [class.is-confirming]="memberToDelete()?.groupMemebrId === member.groupMemebrId">
+            <div class="member-avatar">{{ getMemberInitials(member.name) }}</div>
+            <div class="member-info">
+              <span class="member-name">{{ member.name }}</span>
+              <span class="member-email">{{ member.email }}</span>
+              <span class="member-phone" *ngIf="member.phone">{{ member.phone }}</span>
+            </div>
+            <div class="member-meta">
+              <span class="member-since">{{ formatMemberDate(member.createdAt) }}</span>
+              <button
+                class="btn-member-delete"
+                (click)="confirmDeleteMember(member)"
+                title="Remove member"
+                *ngIf="memberToDelete()?.groupMemebrId !== member.groupMemebrId"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="3 6 5 6 21 6"></polyline>
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Inline Delete Confirmation -->
+          <div class="member-confirm-delete" *ngIf="memberToDelete()?.groupMemebrId === member.groupMemebrId">
+            <span class="confirm-text">Remove <strong>{{ member.name }}</strong>?</span>
+            <div class="confirm-actions">
+              <div class="confirm-error" *ngIf="deleteMemberError()">{{ deleteMemberError() }}</div>
+              <button class="btn-confirm-cancel" (click)="cancelDeleteMember()" [disabled]="isDeletingMember()">Cancel</button>
+              <button class="btn-confirm-delete" (click)="submitDeleteMember()" [disabled]="isDeletingMember()">
+                <span *ngIf="!isDeletingMember()">Remove</span>
+                <span class="btn-loader" *ngIf="isDeletingMember()"><span class="spinner-small"></span></span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <div class="panel-footer">
+      <button class="btn-primary btn-full" (click)="openAddMemberFromPanel()">
+        + Add Member
+      </button>
+    </div>
+
+  </aside>
+
+  <!-- Add Member Modal Overlay -->
+  <div class="modal-overlay" *ngIf="isAddMemberModalOpen()">
+    <div class="modal-backdrop" (click)="closeAddMemberModal()"></div>
+    <div class="modal-card">
+
+      <div class="modal-header">
+        <div class="modal-icon-wrap">
+          <span class="modal-icon"><lucide-icon [img]="User" [size]="28" [strokeWidth]="1.8"></lucide-icon></span>
+        </div>
+        <button class="btn-close" (click)="closeAddMemberModal()">×</button>
+      </div>
+
+      <div class="modal-body">
+        <h2 class="modal-title">Add Member</h2>
+        <p class="modal-subtitle">
+          Add a new member to <strong>{{ memberTargetGroup()?.name || memberTargetGroup()?.title || 'this house' }}</strong>.
+        </p>
+
+        <form (ngSubmit)="submitAddMember()">
+          <div class="field">
+            <label class="field-label" for="memberName">Full Name</label>
+            <input
+              id="memberName"
+              class="input-clean"
+              type="text"
+              placeholder="e.g. Jane Doe"
+              [(ngModel)]="newMemberName"
+              name="memberName"
+              required
+              autofocus
+            />
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="memberEmail">Email Address</label>
+            <input
+              id="memberEmail"
+              class="input-clean"
+              type="email"
+              placeholder="e.g. jane@example.com"
+              [(ngModel)]="newMemberEmail"
+              name="memberEmail"
+              required
+            />
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="memberPhone">Phone <span class="field-optional">(optional)</span></label>
+            <input
+              id="memberPhone"
+              class="input-clean"
+              type="tel"
+              placeholder="e.g. +1 555 000 0000"
+              [(ngModel)]="newMemberPhone"
+              name="memberPhone"
+            />
+          </div>
+
+          <div class="modal-error" *ngIf="addMemberError()">
+            <lucide-icon [img]="TriangleAlert" [size]="14" [strokeWidth]="2"></lucide-icon> {{ addMemberError() }}
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" class="btn-cancel" (click)="closeAddMemberModal()" [disabled]="isAddingMember()">Cancel</button>
+            <button type="submit" class="btn-submit" [disabled]="isAddingMember()">
+              <span *ngIf="!isAddingMember()">Add Member</span>
+              <span class="btn-loader" *ngIf="isAddingMember()">
+                <span class="spinner-small"></span> Adding...
+              </span>
+            </button>
+          </div>
+        </form>
       </div>
 
     </div>

@@ -13,11 +13,24 @@ export interface Group {
   [key: string]: any;
 }
 
+export interface GroupMember {
+  groupMemebrId?: number;
+  name: string;
+  email: string;
+  phone?: string;
+  groupId: number | string;
+  createdAt?: string;
+  createdBy?: string;
+  modifiedAt?: string;
+  modifiedBy?: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class GroupService {
   private apiUrl = `${environment.apiUrl}/groups`;
+  private membersUrl = `${environment.apiUrl}/group-members`;
 
   constructor(private http: HttpClient) {}
 
@@ -31,5 +44,17 @@ export class GroupService {
 
   deleteGroup(groupId: number | string): Observable<any> {
     return this.http.delete<any>(`${this.apiUrl}?groupId=${groupId}`);
+  }
+
+  addGroupMember(payload: GroupMember): Observable<GroupMember> {
+    return this.http.post<GroupMember>(this.membersUrl, payload);
+  }
+
+  getGroupMembers(groupId: number | string): Observable<GroupMember[]> {
+    return this.http.get<GroupMember[]>(`${this.membersUrl}/${groupId}`);
+  }
+
+  deleteGroupMember(groupMemberId: number): Observable<any> {
+    return this.http.delete<any>(`${this.membersUrl}?groupMemberId=${groupMemberId}`);
   }
 }

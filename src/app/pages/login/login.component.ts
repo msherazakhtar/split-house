@@ -3,14 +3,22 @@ import { CommonModule } from '@angular/common';
 import { RouterLink, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
+import { LucideAngularModule, User, Lock, Eye, EyeOff, TriangleAlert, Check } from 'lucide-angular';
 
 @Component({
   selector: 'app-login',
-  imports: [CommonModule, RouterLink, FormsModule],
+  imports: [CommonModule, RouterLink, FormsModule, LucideAngularModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
 })
 export class LoginComponent {
+  readonly User = User;
+  readonly Lock = Lock;
+  readonly Eye = Eye;
+  readonly EyeOff = EyeOff;
+  readonly TriangleAlert = TriangleAlert;
+  readonly Check = Check;
+
   username = '';
   password = '';
   showPassword = signal(false);

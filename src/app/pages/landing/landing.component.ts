@@ -1,96 +1,124 @@
-import { Component, OnInit, OnDestroy, signal } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import {
+  LucideAngularModule,
+  LucideIconData,
+  Zap,
+  Scale,
+  History,
+  Users,
+  ArrowLeftRight,
+  ShoppingCart,
+  Globe,
+  Check,
+} from 'lucide-angular';
 
 @Component({
   selector: 'app-landing',
-  imports: [CommonModule, RouterLink, FormsModule],
+  imports: [CommonModule, RouterLink, FormsModule, LucideAngularModule],
   templateUrl: './landing.component.html',
   styleUrl: './landing.component.css',
 })
-export class LandingComponent implements OnInit, OnDestroy {
-  currentStatIndex = signal(0);
-  private interval: ReturnType<typeof setInterval> | null = null;
+export class LandingComponent {
+  readonly ShoppingCart = ShoppingCart;
+  readonly Zap = Zap;
+  readonly Globe = Globe;
+  readonly Check = Check;
 
-  features = [
+  features: { icon: LucideIconData; title: string; description: string }[] = [
     {
-      icon: '⚡',
-      title: 'Instant Splits',
+      icon: Zap,
+      title: 'Automatic balances',
       description:
-        'Split any expense in seconds. Equal splits, custom amounts, or percentage-based — your choice.',
+        'The moment an expense is added, every flatmate\'s balance updates instantly, so there\'s never a debate about the numbers.',
     },
     {
-      icon: '🏠',
-      title: 'House Groups',
+      icon: Scale,
+      title: 'Flexible splitting',
       description:
-        'Create dedicated spaces for roommates, families, or any shared living arrangement.',
+        'Not everything divides equally. Split by percentage, by specific amounts, or just mark it as one person\'s responsibility.',
     },
     {
-      icon: '📊',
-      title: 'Smart Analytics',
+      icon: History,
+      title: 'Expense history',
       description:
-        'Visualize spending patterns, track monthly trends, and understand where your money goes.',
+        'Every rupee, every purchase, every person who paid, all in one place when month-end rolls around.',
     },
     {
-      icon: '🔔',
-      title: 'Real-time Sync',
+      icon: Users,
+      title: 'Group expense tracking',
       description:
-        'Every expense updates instantly across all members. No more out-of-date balances.',
+        'One group for the whole flat. Everyone can see what\'s been added, who contributed, and what\'s still outstanding.',
     },
     {
-      icon: '💳',
-      title: 'Settlement Tracking',
+      icon: ArrowLeftRight,
+      title: 'Settlement suggestions',
       description:
-        'Know exactly who owes what. Settle debts with a single tap and keep records clean.',
+        'When it\'s time to settle up, Barabar tells you the simplest way to clear all balances, usually fewer transactions than you\'d expect.',
     },
-    {
-      icon: '🔒',
-      title: 'Secure & Private',
-      description:
-        'Bank-level encryption keeps your financial data safe. Your data, your control.',
-    },
-  ];
-
-  stats = [
-    { value: '100%', label: 'Transparent' },
-    { value: '0', label: 'Hidden Fees' },
-    { value: '∞', label: 'Unlimited Groups' },
-    { value: '24/7', label: 'Cloud Sync' },
   ];
 
   steps = [
     {
       number: '01',
-      title: 'Create Your House',
-      description: 'Set up a group for your home, apartment, or any shared space in under a minute.',
+      title: 'Create your group',
+      description: 'Add your flatmates. Takes about thirty seconds, no setup drama.',
     },
     {
       number: '02',
-      title: 'Add Housemates',
-      description: 'Invite your roommates or family members via email. They join with one click.',
+      title: 'Add expenses as they happen',
+      description:
+        'Someone pays for gas? Enter who paid, how much, and split it however makes sense.',
     },
     {
       number: '03',
-      title: 'Log Expenses',
-      description: 'Add any shared expense and choose how to split it among members.',
-    },
-    {
-      number: '04',
-      title: 'Settle Up',
-      description: 'See a clean summary of who owes what and settle balances effortlessly.',
+      title: 'Barabar does the math',
+      description:
+        'See exactly who owes whom. No spreadsheet, no argument, no guessing.',
     },
   ];
 
-  ngOnInit(): void {
-    this.interval = setInterval(() => {
-      this.currentStatIndex.update((i) => (i + 1) % this.stats.length);
-    }, 2500);
-  }
+  painPoints = [
+    {
+      headline: 'The "yaar tu mujhe 1,500 deta tha na" moment.',
+      body: 'You paid for groceries three weeks ago. Nobody acknowledged it. Now it\'s month-end and you\'re doing the math in your head while your flatmate sits there acting confused. You know the feeling.',
+    },
+    {
+      headline: 'The WhatsApp voice note war.',
+      body: 'Electricity bill comes. Someone shares it in the group. Three voice notes later, nobody agrees on who paid for the internet last month, and the landlord is already texting.',
+    },
+    {
+      headline: 'The one flatmate who always "forgets."',
+      body: 'He\'s not broke. He\'s not a bad person. He just has a mysteriously convenient memory when it comes to his share. You don\'t want to fight. You just want your money.',
+    },
+    {
+      headline: 'The silence after someone pays for dinner.',
+      body: 'You covered the biryani for the whole table. You said "we\'ll sort it later." It\'s been six days. The silence is doing something to you.',
+    },
+  ];
 
-  ngOnDestroy(): void {
-    if (this.interval) clearInterval(this.interval);
-  }
+  testimonials = [
+    {
+      quote:
+        'We used to fight about bills every month without fail. Someone would always say they didn\'t remember agreeing to pay that amount. Now we just open Barabar and the numbers are right there. Nobody can argue with the app.',
+      name: 'Haris M.',
+      location: 'Lahore',
+    },
+    {
+      quote:
+        'I was the one always calculating on my phone calculator and sending it in the group chat. My flatmates would double-check it anyway. Now I just send them the Barabar link and we\'re done.',
+      name: 'Zara K.',
+      location: 'Islamabad',
+    },
+    {
+      quote:
+        'Honestly I didn\'t realize how much tension living with people can create until the money stuff just stopped being a thing. It sounds small but it genuinely changed the vibe in our flat.',
+      name: 'Bilal A.',
+      location: 'Karachi',
+    },
+  ];
 
   // Waitlist State
   email = '';
@@ -104,23 +132,19 @@ export class LandingComponent implements OnInit, OnDestroy {
     this.waitlistState.set('loading');
     this.waitlistErrorMsg = '';
 
-    const webhookUrl = 'https://script.google.com/macros/s/AKfycbzaWqcggCyv6yHi11Fl_FVkwtTcXpNb1dTWbQ4_aP_Ld5qszU7iQVnZj1vMHHa4X22-DQ/exec';
-    
+    const webhookUrl =
+      'https://script.google.com/macros/s/AKfycbzaWqcggCyv6yHi11Fl_FVkwtTcXpNb1dTWbQ4_aP_Ld5qszU7iQVnZj1vMHHa4X22-DQ/exec';
+
     try {
-      // Fire and forget to avoid being blocked by Google Script redirects/CORS
       fetch(webhookUrl, {
         method: 'POST',
         mode: 'no-cors',
-        headers: {
-          'Content-Type': 'text/plain;charset=utf-8'
-        },
-        body: JSON.stringify({ email: this.email })
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ email: this.email }),
       });
 
-      // Update state immediately to ensure the user sees the success message
       this.waitlistState.set('success');
       this.email = '';
-
     } catch (err) {
       console.error('Waitlist submission error:', err);
       this.waitlistState.set('error');

@@ -44,9 +44,9 @@
 }
 
 .logo-icon {
-  font-size: 1.5rem;
   color: var(--accent-primary);
   filter: drop-shadow(0 0 8px var(--accent-primary));
+  flex-shrink: 0;
 }
 
 .nav-links {
@@ -455,6 +455,9 @@
   white-space: nowrap;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
   z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
 }
 
 .pill-1 {
@@ -551,6 +554,23 @@
   gap: 1.5rem;
 }
 
+.features-grid-5 {
+  grid-template-columns: repeat(6, 1fr);
+}
+
+.features-grid-5 .feature-card {
+  grid-column: span 2;
+}
+
+/* Centre the 4th and 5th cards in the last row */
+.features-grid-5 .feature-card:nth-child(4) {
+  grid-column: 2 / span 2;
+}
+
+.features-grid-5 .feature-card:nth-child(5) {
+  grid-column: 4 / span 2;
+}
+
 .feature-card {
   background: var(--bg-card);
   border: 1px solid var(--border-subtle);
@@ -568,9 +588,9 @@
 }
 
 .feature-icon {
-  font-size: 2rem;
   margin-bottom: 1rem;
-  display: block;
+  display: flex;
+  color: var(--accent-primary);
 }
 
 .feature-title {
@@ -587,6 +607,49 @@
   line-height: 1.7;
 }
 
+/* ---- PAIN SECTION ---- */
+.pain-section {
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.pain-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  margin-top: 0.5rem;
+}
+
+.pain-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 20px;
+  padding: 2rem;
+  transition: all 0.3s ease;
+}
+
+.pain-card:hover {
+  border-color: var(--border-color);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+}
+
+.pain-headline {
+  font-family: 'Syne', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.85rem;
+  line-height: 1.45;
+}
+
+.pain-body {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.75;
+}
+
 /* ---- HOW IT WORKS ---- */
 .steps-container {
   display: grid;
@@ -594,6 +657,10 @@
   gap: 0;
   position: relative;
   margin-bottom: 3.5rem;
+}
+
+.steps-3 {
+  grid-template-columns: repeat(3, 1fr);
 }
 
 .step {
@@ -646,63 +713,82 @@
   text-align: center;
 }
 
-/* ---- STATS ---- */
-.stats-section {
+/* ---- TESTIMONIALS ---- */
+.testimonials-section {
   background: var(--bg-secondary);
   border-top: 1px solid var(--border-subtle);
   border-bottom: 1px solid var(--border-subtle);
 }
 
-.stats-inner {
-  display: flex;
-  align-items: center;
-  gap: 6rem;
-}
-
-.stats-text {
-  flex: 1;
-}
-
-.stats-grid {
-  flex: 1;
+.testimonials-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 1.5rem;
 }
 
-.stat-card {
+.testimonial-card {
   background: var(--bg-card);
   border: 1px solid var(--border-subtle);
   border-radius: 20px;
   padding: 2rem;
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
   transition: all 0.3s ease;
 }
 
-.stat-card:hover {
+.testimonial-card:hover {
   border-color: var(--border-color);
   transform: translateY(-4px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 0 20px var(--accent-glow);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
 }
 
-.stat-value {
-  font-family: 'Syne', sans-serif;
-  font-size: 2.5rem;
-  font-weight: 800;
-  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  line-height: 1;
-  margin-bottom: 0.5rem;
+.testimonial-quote {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  line-height: 1.8;
+  flex: 1;
 }
 
-.stat-label {
-  font-size: 0.85rem;
+.testimonial-author {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.author-name {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+}
+
+.author-location {
+  font-size: 0.8rem;
   color: var(--text-muted);
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
+}
+
+/* ---- WHY BARABAR ---- */
+.why-section {
+  border-top: 1px solid var(--border-subtle);
+}
+
+.why-inner {
+  max-width: 720px;
+}
+
+.why-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-top: -1rem;
+}
+
+.why-body p {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  line-height: 1.9;
 }
 
 /* ---- CTA BANNER ---- */
@@ -832,13 +918,17 @@
   .hero-content { max-width: 100%; }
   .hero-subtitle { margin-left: auto; margin-right: auto; }
   .hero-actions { justify-content: center; }
-  .hero-stats { justify-content: center; }
   .hero-visual { max-width: 380px; }
 
+  .pain-grid { grid-template-columns: repeat(2, 1fr); }
   .features-grid { grid-template-columns: repeat(2, 1fr); }
+  .features-grid-5 { grid-template-columns: repeat(2, 1fr); }
+  .features-grid-5 .feature-card { grid-column: span 1; }
+  .features-grid-5 .feature-card:nth-child(4) { grid-column: span 1; }
+  .features-grid-5 .feature-card:nth-child(5) { grid-column: span 1; }
   .steps-container { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
-  .stats-inner { flex-direction: column; gap: 3rem; text-align: center; }
-  .stats-text .section-subtitle { margin-left: auto; margin-right: auto; }
+  .steps-3 { grid-template-columns: repeat(3, 1fr); }
+  .testimonials-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
 @media (max-width: 768px) {
@@ -846,12 +936,17 @@
   .nav-actions { display: none; }
   .nav-mobile-cta { display: flex; }
 
+  .pain-grid { grid-template-columns: 1fr; }
   .features-grid { grid-template-columns: 1fr; }
+  .features-grid-5 { grid-template-columns: 1fr; }
   .steps-container { grid-template-columns: 1fr; }
+  .steps-3 { grid-template-columns: 1fr; }
   .step { margin: 0; }
-
-  .hero-stats { gap: 1.25rem; flex-wrap: wrap; }
+  .testimonials-grid { grid-template-columns: 1fr; }
   .floating-pill { display: none; }
+
+  .section { padding: 4.5rem 0; }
+  .why-inner { max-width: 100%; }
 }
 
 /* ---- WAITLIST COMPONENT ---- */
@@ -919,7 +1014,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.5rem;
+  color: #34d399;
 }
 
 .waitlist-error {

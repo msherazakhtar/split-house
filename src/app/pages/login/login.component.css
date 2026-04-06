@@ -116,9 +116,9 @@
 }
 
 .logo-icon {
-  font-size: 1.6rem;
   color: var(--accent-primary);
   filter: drop-shadow(0 0 8px var(--accent-primary));
+  flex-shrink: 0;
 }
 
 .brand-headline {
@@ -333,7 +333,8 @@
 .input-icon {
   position: absolute;
   left: 1rem;
-  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
   pointer-events: none;
   color: var(--text-muted);
   z-index: 1;
@@ -368,11 +369,11 @@
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 1rem;
   padding: 0.25rem;
   color: var(--text-muted);
   transition: opacity 0.2s ease;
-  line-height: 1;
+  display: flex;
+  align-items: center;
 }
 
 .toggle-password:hover {

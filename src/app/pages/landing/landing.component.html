@@ -1,261 +1,251 @@
-<section class="landing">
+<div class="landing">
 
-  <!-- ===== NAVBAR ===== -->
+  <!-- NAVBAR -->
   <nav class="navbar">
-    <div class="nav-container">
+    <div class="nav-inner">
       <div class="nav-logo">
-        <svg class="logo-icon" viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <path d="M12 2L20.66 7V17L12 22L3.34 17V7L12 2Z"/>
         </svg>
-        <span class="logo-text">Barabar</span>
+        <span>Barabar</span>
       </div>
       <ul class="nav-links">
         <li><a href="#pain">The Problem</a></li>
         <li><a href="#how-it-works">How It Works</a></li>
         <li><a href="#features">Features</a></li>
       </ul>
-      <div class="nav-actions">
-        <a href="#waitlist" class="btn btn-primary">Start for free</a>
-      </div>
-      <div class="nav-mobile-cta">
-        <a href="#waitlist" class="btn btn-primary btn-sm">Start free</a>
-      </div>
+      <a href="#waitlist" class="btn btn-dark nav-cta">Start for free</a>
+      <a href="#waitlist" class="btn btn-dark btn-sm nav-mobile-cta">Start free</a>
     </div>
   </nav>
 
-  <!-- ===== HERO ===== -->
+  <!-- HERO -->
   <section class="hero">
-    <div class="hero-bg-orb hero-orb-1"></div>
-    <div class="hero-bg-orb hero-orb-2"></div>
-    <div class="hero-bg-grid"></div>
-
-    <div class="hero-content">
-      <div class="hero-badge">
-        <span class="badge-dot"></span>
-        Fair splits for shared living
-      </div>
-      <h1 class="hero-title">
-        Hisaab ho gaya.<br />
-        <span class="hero-title-accent">No drama.</span>
-      </h1>
-      <p class="hero-subtitle">
-        Barabar tracks every expense in your shared flat so you always know exactly
-        who owes what, without the monthly awkwardness, the WhatsApp chaos, or the
-        mental math at midnight.
-      </p>
-      <div class="hero-actions">
-        <a href="#waitlist" class="btn btn-primary btn-lg">
-          Start splitting for free
-          <span class="btn-arrow">→</span>
-        </a>
-        <a href="#how-it-works" class="btn btn-outline btn-lg">See how it works</a>
-      </div>
-    </div>
-
-    <!-- Hero visual card mockup -->
-    <div class="hero-visual">
-      <div class="mockup-card">
-        <div class="mockup-header">
-          <span class="mockup-title">This Month</span>
-          <span class="mockup-badge">April</span>
+    <div class="container hero-inner">
+      <div class="hero-copy">
+        <p class="eyebrow">Fair splits for shared living</p>
+        <h1 class="hero-title">Hisaab ho gaya.<br>No drama.</h1>
+        <p class="hero-subtitle">
+          Barabar tracks every expense in your shared flat so you always know exactly
+          who owes what — without the monthly awkwardness, the WhatsApp chaos, or
+          the mental math at midnight.
+        </p>
+        <div class="hero-actions">
+          <a href="#waitlist" class="btn btn-dark btn-lg">Start splitting for free &rarr;</a>
+          <a href="#how-it-works" class="btn btn-outline-dark btn-lg">See how it works</a>
         </div>
-        <div class="mockup-amount">Rs. 48,200</div>
-        <div class="mockup-label">Total Shared Expenses</div>
-        <div class="mockup-divider"></div>
-        <div class="mockup-members">
-          <div class="mockup-member">
-            <div class="avatar av-1">A</div>
-            <div class="member-info">
-              <span class="member-name">Ali</span>
-              <span class="member-owes positive">+Rs. 8,400</span>
-            </div>
-          </div>
-          <div class="mockup-member">
-            <div class="avatar av-2">S</div>
-            <div class="member-info">
-              <span class="member-name">Sara</span>
-              <span class="member-owes negative">-Rs. 4,200</span>
-            </div>
-          </div>
-          <div class="mockup-member">
-            <div class="avatar av-3">R</div>
-            <div class="member-info">
-              <span class="member-name">Raza</span>
-              <span class="member-owes negative">-Rs. 4,200</span>
-            </div>
-          </div>
-        </div>
-        <a href="#waitlist" class="mockup-cta">Settle Up →</a>
       </div>
 
-      <div class="floating-pill pill-1"><lucide-icon [img]="ShoppingCart" [size]="13" [strokeWidth]="2"></lucide-icon> Groceries · Rs. 3,200</div>
-      <div class="floating-pill pill-2"><lucide-icon [img]="Zap" [size]="13" [strokeWidth]="2"></lucide-icon> Electricity · Rs. 5,800</div>
-      <div class="floating-pill pill-3"><lucide-icon [img]="Globe" [size]="13" [strokeWidth]="2"></lucide-icon> Internet · Rs. 2,400</div>
+      <div class="hero-visual">
+        <div class="app-card">
+          <div class="app-card-header">
+            <span class="app-card-label">This Month</span>
+            <span class="app-card-badge">April</span>
+          </div>
+          <div class="app-card-amount">Rs. 48,200</div>
+          <div class="app-card-sublabel">Total Shared Expenses</div>
+          <div class="app-card-divider"></div>
+          <div class="app-card-members">
+            <div class="app-member">
+              <div class="app-avatar av-1">A</div>
+              <div class="app-member-info">
+                <span class="app-member-name">Ali</span>
+                <span class="app-member-amount positive">+Rs. 8,400</span>
+              </div>
+            </div>
+            <div class="app-member">
+              <div class="app-avatar av-2">S</div>
+              <div class="app-member-info">
+                <span class="app-member-name">Sara</span>
+                <span class="app-member-amount negative">&minus;Rs. 4,200</span>
+              </div>
+            </div>
+            <div class="app-member">
+              <div class="app-avatar av-3">R</div>
+              <div class="app-member-info">
+                <span class="app-member-name">Raza</span>
+                <span class="app-member-amount negative">&minus;Rs. 4,200</span>
+              </div>
+            </div>
+          </div>
+          <a href="#waitlist" class="app-card-cta">Settle Up &rarr;</a>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- ===== PAIN SECTION ===== -->
-  <section class="pain-section section" id="pain">
-    <div class="section-container">
-      <div class="section-tag">Sound Familiar?</div>
-      <h2 class="section-title">We've all lived this.<br /><span class="accent">Every single month.</span></h2>
-
+  <!-- PAIN SECTION -->
+  <section class="section section-alt" id="pain">
+    <div class="container">
+      <p class="section-label anim">Sound Familiar?</p>
+      <h2 class="section-title anim" style="--d:80ms">We've all lived this.<br>Every single month.</h2>
       <div class="pain-grid">
-        <div class="pain-card" *ngFor="let point of painPoints">
-          <p class="pain-headline">"{{ point.headline }}"</p>
-          <p class="pain-body">{{ point.body }}</p>
-        </div>
+        @for (point of painPoints; track point.headline; let i = $index) {
+          <div class="pain-card anim" [style]="'--d:' + (i * 75) + 'ms'">
+            <p class="pain-headline">"{{ point.headline }}"</p>
+            <p class="pain-body">{{ point.body }}</p>
+          </div>
+        }
       </div>
     </div>
   </section>
 
-  <!-- ===== HOW IT WORKS ===== -->
-  <section class="how-it-works section" id="how-it-works">
-    <div class="section-container">
-      <div class="section-tag">How It Works</div>
-      <h2 class="section-title">Three steps.<br /><span class="accent">Then it's done.</span></h2>
-      <p class="section-subtitle">No complicated setup. Just create, add, and let Barabar handle the rest.</p>
-
-      <div class="steps-container steps-3">
-        <div class="step" *ngFor="let step of steps">
-          <div class="step-number">{{ step.number }}</div>
-          <div class="step-content">
+  <!-- HOW IT WORKS -->
+  <section class="section" id="how-it-works">
+    <div class="container">
+      <p class="section-label anim">How It Works</p>
+      <h2 class="section-title anim" style="--d:80ms">Three steps.<br>Then it's done.</h2>
+      <p class="section-sub anim" style="--d:140ms">No complicated setup. Just create, add, and let Barabar handle the rest.</p>
+      <div class="steps-row">
+        @for (step of steps; track step.number; let i = $index) {
+          <div class="step-card anim" [style]="'--d:' + (i * 80) + 'ms'">
+            <span class="step-num">{{ step.number }}</span>
             <h3 class="step-title">{{ step.title }}</h3>
-            <p class="step-description">{{ step.description }}</p>
+            <p class="step-desc">{{ step.description }}</p>
           </div>
-        </div>
+        }
       </div>
-
-      <div class="steps-cta">
-        <a href="#waitlist" class="btn btn-primary btn-lg">
-          Get started, it's free
-          <span class="btn-arrow">→</span>
-        </a>
+      <div class="section-cta anim" style="--d:80ms">
+        <a href="#waitlist" class="btn btn-dark btn-lg">Get started, it's free &rarr;</a>
       </div>
     </div>
   </section>
 
-  <!-- ===== FEATURES ===== -->
-  <section class="features section" id="features">
-    <div class="section-container">
-      <div class="section-tag">Features</div>
-      <h2 class="section-title">Built for the way shared<br /><span class="accent">living actually works.</span></h2>
-      <p class="section-subtitle">
-        No features you'll never open. Just the ones that quietly solve the thing that was annoying you every month.
+  <!-- FEATURES -->
+  <section class="section section-alt" id="features">
+    <div class="container">
+      <p class="section-label anim">Features</p>
+      <h2 class="section-title anim" style="--d:80ms">Built for the way shared<br>living actually works.</h2>
+      <p class="section-sub anim" style="--d:140ms">
+        No features you'll never open. Just the ones that quietly solve the thing
+        that was annoying you every month.
       </p>
-
-      <div class="features-grid features-grid-5">
-        <div class="feature-card" *ngFor="let feature of features">
-          <div class="feature-icon"><lucide-icon [img]="feature.icon" [size]="28" [strokeWidth]="1.8"></lucide-icon></div>
-          <h3 class="feature-title">{{ feature.title }}</h3>
-          <p class="feature-description">{{ feature.description }}</p>
-        </div>
+      <div class="features-grid">
+        @for (feature of features; track feature.title; let i = $index) {
+          <div class="feature-card anim" [style]="'--d:' + (i * 70) + 'ms'">
+            <div class="feature-icon-wrap">
+              <lucide-icon [img]="feature.icon" [size]="20" [strokeWidth]="1.8"></lucide-icon>
+            </div>
+            <h3 class="feature-title">{{ feature.title }}</h3>
+            <p class="feature-desc">{{ feature.description }}</p>
+          </div>
+        }
       </div>
     </div>
   </section>
 
-  <!-- ===== TESTIMONIALS ===== -->
-  <section class="testimonials-section section">
-    <div class="section-container">
-      <div class="section-tag">Real People</div>
-      <h2 class="section-title">Real flats.<br /><span class="accent">Actual relief.</span></h2>
-
+  <!-- TESTIMONIALS -->
+  <section class="section">
+    <div class="container">
+      <p class="section-label anim">Real People</p>
+      <h2 class="section-title anim" style="--d:80ms">Real flats.<br>Actual relief.</h2>
       <div class="testimonials-grid">
-        <div class="testimonial-card" *ngFor="let t of testimonials">
-          <p class="testimonial-quote">"{{ t.quote }}"</p>
-          <div class="testimonial-author">
-            <span class="author-name">{{ t.name }}</span>
-            <span class="author-location">{{ t.location }}</span>
+        @for (t of testimonials; track t.name; let i = $index) {
+          <div class="t-card anim" [style]="'--d:' + (i * 90) + 'ms'">
+            <p class="t-quote">"{{ t.quote }}"</p>
+            <div class="t-author">
+              <span class="t-name">{{ t.name }}</span>
+              <span class="t-location">{{ t.location }}</span>
+            </div>
           </div>
-        </div>
+        }
       </div>
     </div>
   </section>
 
-  <!-- ===== WHY BARABAR ===== -->
-  <section class="why-section section">
-    <div class="section-container">
-      <div class="why-inner">
-        <div class="section-tag">Why we built this</div>
-        <h2 class="section-title">We got tired of<br /><span class="accent">being the one who remembers.</span></h2>
+  <!-- WHY BARABAR -->
+  <section class="section section-alt">
+    <div class="container">
+      <div class="why-block">
+        <p class="section-label anim">Why we built this</p>
+        <h2 class="section-title anim" style="--d:80ms">We got tired of being<br>the one who remembers.</h2>
         <div class="why-body">
-          <p>
+          <p class="anim" style="--d:140ms">
             Barabar was built because someone in a shared flat got tired of being the person
-            who always remembered. Tired of the awkward reminder texts. Tired of the mental tab
-            running in the background, who owes what, for how long, and whether bringing it up
-            is worth the tension.
+            who always remembered. Tired of the awkward reminder texts. Tired of the mental
+            tab running in the background — who owes what, for how long, and whether bringing
+            it up is worth the tension.
           </p>
-          <p>
-            Shared living is already an exercise in patience. Money shouldn't be the thing that
-            makes it harder. We didn't want a complicated app with fourteen features nobody uses.
-            We wanted something you'd actually open, actually trust, and actually use every time
-            someone buys groceries.
+          <p class="anim" style="--d:200ms">
+            Shared living is already an exercise in patience. Money shouldn't be the thing
+            that makes it harder. We didn't want a complicated app with fourteen features
+            nobody uses. We wanted something you'd actually open, actually trust, and actually
+            use every time someone buys groceries.
           </p>
-          <p>
-            That's it. No grand vision. Just the simple belief that keeping things barabar between
-            people who live together shouldn't require this much energy.
+          <p class="anim" style="--d:260ms">
+            That's it. No grand vision. Just the simple belief that keeping things barabar
+            between people who live together shouldn't require this much energy.
           </p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ===== WAITLIST / CTA ===== -->
-  <section class="cta-banner" id="waitlist">
-    <div class="cta-orb cta-orb-1"></div>
-    <div class="cta-orb cta-orb-2"></div>
-    <div class="cta-content">
-      <h2 class="cta-title">Bas try kar ke dekho.<br />Seriously.</h2>
-      <p class="cta-subtitle">
-        Free to use, takes two minutes to set up, and your flatmates will actually thank you
-        for introducing it. (Probably.)
-      </p>
-
-      <form class="waitlist-form" (submit)="submitWaitlist($event)">
-        <div class="waitlist-input-group" *ngIf="waitlistState() !== 'success'">
-          <input
-            type="email"
-            [(ngModel)]="email"
-            name="email"
-            placeholder="Enter your email address"
-            class="waitlist-input"
-            required
-            [disabled]="waitlistState() === 'loading'"
-          />
-          <button type="submit" class="btn btn-primary waitlist-btn" [disabled]="waitlistState() === 'loading'">
-            <span *ngIf="waitlistState() !== 'loading'">Get started, it's free</span>
-            <span *ngIf="waitlistState() === 'loading'">Joining...</span>
-          </button>
-        </div>
-
-        <div class="waitlist-success" *ngIf="waitlistState() === 'success'">
-          <div class="success-icon"><lucide-icon [img]="Check" [size]="22" [strokeWidth]="2.5"></lucide-icon></div>
-          <p style="margin-bottom: 0;">You're on the list. We'll be in touch.</p>
-          <p style="margin-bottom: 1rem;">Follow our WhatsApp channel for launch updates.</p>
-          <a href="https://whatsapp.com/channel/0029Vb6Ds1K11ulT71vtIF0S" target="_blank" class="btn btn-primary" style="background:#25D366;border:none;box-shadow:none;">
-            Join WhatsApp Channel
-          </a>
-        </div>
-
-        <div class="waitlist-error" *ngIf="waitlistState() === 'error'">
-          {{ waitlistErrorMsg }}
-        </div>
-      </form>
+  <!-- CTA / WAITLIST -->
+  <section class="cta-section" id="waitlist">
+    <div class="container">
+      <div class="cta-inner">
+        <h2 class="cta-title anim">Bas try kar ke dekho.<br>Seriously.</h2>
+        <p class="cta-sub anim" style="--d:80ms">
+          Free to use, takes two minutes to set up, and your flatmates will actually
+          thank you for introducing it. (Probably.)
+        </p>
+        <form class="waitlist-form" (submit)="submitWaitlist($event)">
+          @if (waitlistState() !== 'success') {
+            <div class="waitlist-row">
+              <input
+                type="email"
+                [(ngModel)]="email"
+                name="email"
+                placeholder="Enter your email address"
+                class="waitlist-input"
+                required
+                [disabled]="waitlistState() === 'loading'"
+              />
+              <button type="submit" class="btn btn-white waitlist-btn" [disabled]="waitlistState() === 'loading'">
+                @if (waitlistState() !== 'loading') {
+                  <span>Get started, it's free</span>
+                } @else {
+                  <span>Joining...</span>
+                }
+              </button>
+            </div>
+          }
+          @if (waitlistState() === 'success') {
+            <div class="waitlist-success">
+              <div class="success-icon">
+                <lucide-icon [img]="Check" [size]="20" [strokeWidth]="2.5"></lucide-icon>
+              </div>
+              <p>You're on the list. We'll be in touch.</p>
+              <p>Follow our WhatsApp channel for launch updates.</p>
+              <a href="https://whatsapp.com/channel/0029Vb6Ds1K11ulT71vtIF0S" target="_blank"
+                 class="btn btn-white" style="background:#25D366;color:#fff;border:none;">
+                Join WhatsApp Channel
+              </a>
+            </div>
+          }
+          @if (waitlistState() === 'error') {
+            <div class="waitlist-error">
+              {{ waitlistErrorMsg }}
+            </div>
+          }
+        </form>
+      </div>
     </div>
   </section>
 
-  <!-- ===== FOOTER ===== -->
+  <!-- FOOTER -->
   <footer class="footer">
-    <div class="footer-container">
-      <div class="footer-logo">
-        <svg class="logo-icon" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <path d="M12 2L20.66 7V17L12 22L3.34 17V7L12 2Z"/>
         </svg>
-        <span class="logo-text">Barabar</span>
+        <span>Barabar</span>
       </div>
       <p class="footer-tagline">Fair splits. Fewer awkward texts.</p>
       <div class="footer-bottom">
-        <span class="footer-copy">© 2026 Barabar. All rights reserved.</span>
+        <span class="footer-copy">&copy; 2026 Barabar. All rights reserved.</span>
         <div class="footer-links">
           <a href="#">Privacy</a>
           <a href="#">Terms</a>
@@ -265,4 +255,4 @@
     </div>
   </footer>
 
-</section>
+</div>

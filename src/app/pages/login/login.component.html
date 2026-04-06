@@ -1,172 +1,159 @@
 <div class="login-page">
 
-  <!-- Background decorations -->
-  <div class="bg-orb bg-orb-1"></div>
-  <div class="bg-orb bg-orb-2"></div>
-  <div class="bg-grid"></div>
+  <!-- Left panel — branding -->
+  <div class="login-brand">
 
-  <!-- Back to home -->
-  <a routerLink="/" class="back-link">
-    <span class="back-arrow">←</span>
-    Back to Home
-  </a>
+    <a routerLink="/" class="back-link">← Back to home</a>
 
-  <!-- Main layout -->
-  <div class="login-layout">
-
-    <!-- Left panel — branding -->
-    <div class="login-brand">
+    <div class="brand-content">
       <div class="brand-logo">
-        <svg class="logo-icon" viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <path d="M12 2L20.66 7V17L12 22L3.34 17V7L12 2Z"/>
         </svg>
-        <span class="logo-text">SplitHouse</span>
+        <span>SplitHouse</span>
       </div>
 
       <div class="brand-copy">
-        <h2 class="brand-headline">Welcome<br />back.</h2>
+        <h2 class="brand-headline">Welcome<br>back.</h2>
         <p class="brand-sub">Your house, your expenses, your control. Pick up right where you left off.</p>
       </div>
 
-      <!-- Mini feature list -->
       <ul class="brand-features">
         <li>
-          <span class="feature-check"><lucide-icon [img]="Check" [size]="13" [strokeWidth]="2.5"></lucide-icon></span>
+          <span class="feature-dot"></span>
           Real-time expense tracking
         </li>
         <li>
-          <span class="feature-check"><lucide-icon [img]="Check" [size]="13" [strokeWidth]="2.5"></lucide-icon></span>
+          <span class="feature-dot"></span>
           Instant bill splitting
         </li>
         <li>
-          <span class="feature-check"><lucide-icon [img]="Check" [size]="13" [strokeWidth]="2.5"></lucide-icon></span>
+          <span class="feature-dot"></span>
           Smart settlement summaries
         </li>
       </ul>
 
-      <!-- Decorative card -->
       <div class="brand-card">
         <div class="brand-card-row">
-          <div class="bc-avatar bc-av-1">A</div>
+          <div class="bc-avatar av-1">A</div>
           <div class="bc-info">
             <span class="bc-name">Ali paid for Groceries</span>
             <span class="bc-time">Just now</span>
           </div>
-          <span class="bc-amount">$42.00</span>
+          <span class="bc-amount">Rs. 3,200</span>
         </div>
         <div class="brand-card-row">
-          <div class="bc-avatar bc-av-2">S</div>
+          <div class="bc-avatar av-2">S</div>
           <div class="bc-info">
             <span class="bc-name">Sara paid for Electricity</span>
             <span class="bc-time">2 min ago</span>
           </div>
-          <span class="bc-amount">$85.50</span>
+          <span class="bc-amount">Rs. 5,800</span>
         </div>
         <div class="brand-card-row">
-          <div class="bc-avatar bc-av-3">R</div>
+          <div class="bc-avatar av-3">R</div>
           <div class="bc-info">
             <span class="bc-name">Raza settled up with Ali</span>
             <span class="bc-time">5 min ago</span>
           </div>
-          <span class="bc-amount settled">Settled</span>
+          <span class="bc-settled">Settled</span>
         </div>
       </div>
     </div>
 
-    <!-- Right panel — form -->
-    <div class="login-form-panel">
-      <div class="form-card">
+  </div>
 
-        <div class="form-header">
-          <h1 class="form-title">Sign in</h1>
-          <p class="form-subtitle">Enter your credentials to access your house</p>
-        </div>
+  <!-- Right panel — form -->
+  <div class="login-form-panel">
+    <div class="form-card">
 
-        <form class="form" (ngSubmit)="onSubmit()" #loginForm="ngForm">
+      <div class="form-header">
+        <h1 class="form-title">Sign in</h1>
+        <p class="form-subtitle">Enter your credentials to access your house</p>
+      </div>
 
-          <!-- Username -->
-          <div class="field">
-            <label class="field-label" for="username">Username</label>
-            <div class="input-wrapper">
-              <span class="input-icon"><lucide-icon [img]="User" [size]="16" [strokeWidth]="2"></lucide-icon></span>
-              <input
-                id="username"
-                class="input"
-                type="text"
-                placeholder="Enter your username"
-                [(ngModel)]="username"
-                name="username"
-                autocomplete="username"
-                required
-              />
-            </div>
-          </div>
+      <form class="form" (ngSubmit)="onSubmit()" #loginForm="ngForm">
 
-          <!-- Password -->
-          <div class="field">
-            <div class="field-label-row">
-              <label class="field-label" for="password">Password</label>
-              <a href="#" class="forgot-link">Forgot password?</a>
-            </div>
-            <div class="input-wrapper">
-              <span class="input-icon"><lucide-icon [img]="Lock" [size]="16" [strokeWidth]="2"></lucide-icon></span>
-              <input
-                id="password"
-                class="input"
-                [type]="showPassword() ? 'text' : 'password'"
-                placeholder="••••••••"
-                [(ngModel)]="password"
-                name="password"
-                autocomplete="current-password"
-                required
-              />
-              <button
-                type="button"
-                class="toggle-password"
-                (click)="togglePassword()"
-                [attr.aria-label]="showPassword() ? 'Hide password' : 'Show password'"
-              >
-                <lucide-icon [img]="showPassword() ? EyeOff : Eye" [size]="16" [strokeWidth]="2"></lucide-icon>
-              </button>
-            </div>
-          </div>
-
-          <!-- Error message -->
-          <div class="error-msg" *ngIf="errorMessage()">
-            <lucide-icon [img]="TriangleAlert" [size]="14" [strokeWidth]="2"></lucide-icon> {{ errorMessage() }}
-          </div>
-
-          <!-- Submit -->
-          <button
-            type="submit"
-            class="btn-submit"
-            [class.loading]="isLoading()"
-            [disabled]="isLoading()"
-          >
-            <span class="btn-text" *ngIf="!isLoading()">Sign In →</span>
-            <span class="btn-loader" *ngIf="isLoading()">
-              <span class="spinner"></span> Signing in…
+        <div class="field">
+          <label class="field-label" for="username">Username</label>
+          <div class="input-wrap">
+            <span class="input-icon">
+              <lucide-icon [img]="User" [size]="15" [strokeWidth]="2"></lucide-icon>
             </span>
-          </button>
-
-        </form>
-
-        <div class="form-divider">
-          <span class="divider-line"></span>
-          <span class="divider-text">Don't have an account?</span>
-          <span class="divider-line"></span>
+            <input
+              id="username"
+              class="input"
+              type="text"
+              placeholder="Enter your username"
+              [(ngModel)]="username"
+              name="username"
+              autocomplete="username"
+              required
+            />
+          </div>
         </div>
 
-        <div class="form-footer">
-          <p class="signup-prompt">
-            Contact your housemate to get an invite, or
-            <a routerLink="/" class="signup-link">learn more →</a>
-          </p>
+        <div class="field">
+          <div class="field-label-row">
+            <label class="field-label" for="password">Password</label>
+            <a href="#" class="forgot-link">Forgot password?</a>
+          </div>
+          <div class="input-wrap">
+            <span class="input-icon">
+              <lucide-icon [img]="Lock" [size]="15" [strokeWidth]="2"></lucide-icon>
+            </span>
+            <input
+              id="password"
+              class="input"
+              [type]="showPassword() ? 'text' : 'password'"
+              placeholder="••••••••"
+              [(ngModel)]="password"
+              name="password"
+              autocomplete="current-password"
+              required
+            />
+            <button
+              type="button"
+              class="toggle-pw"
+              (click)="togglePassword()"
+              [attr.aria-label]="showPassword() ? 'Hide password' : 'Show password'"
+            >
+              <lucide-icon [img]="showPassword() ? EyeOff : Eye" [size]="15" [strokeWidth]="2"></lucide-icon>
+            </button>
+          </div>
         </div>
 
+        @if (errorMessage()) {
+          <div class="error-msg">
+            <lucide-icon [img]="TriangleAlert" [size]="13" [strokeWidth]="2"></lucide-icon>
+            {{ errorMessage() }}
+          </div>
+        }
+
+        <button type="submit" class="btn-submit" [disabled]="isLoading()">
+          @if (!isLoading()) {
+            <span>Sign In &rarr;</span>
+          } @else {
+            <span class="btn-loader">
+              <span class="spinner"></span> Signing in&hellip;
+            </span>
+          }
+        </button>
+
+      </form>
+
+      <div class="form-divider">
+        <span class="divider-line"></span>
+        <span class="divider-label">Don't have an account?</span>
+        <span class="divider-line"></span>
       </div>
-    </div>
 
+      <p class="signup-prompt">
+        Contact your housemate to get an invite, or
+        <a routerLink="/" class="signup-link">learn more &rarr;</a>
+      </p>
+
+    </div>
   </div>
 
 </div>

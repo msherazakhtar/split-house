@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -21,7 +21,7 @@ import {
   templateUrl: './landing.component.html',
   styleUrl: './landing.component.css',
 })
-export class LandingComponent {
+export class LandingComponent implements AfterViewInit {
   readonly ShoppingCart = ShoppingCart;
   readonly Zap = Zap;
   readonly Globe = Globe;
@@ -119,6 +119,22 @@ export class LandingComponent {
       location: 'Karachi',
     },
   ];
+
+  ngAfterViewInit(): void {
+    const els = document.querySelectorAll('.anim');
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
+    );
+    els.forEach((el) => observer.observe(el));
+  }
 
   // Waitlist State
   email = '';

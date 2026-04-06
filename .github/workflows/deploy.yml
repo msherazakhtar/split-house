@@ -39,3 +39,5 @@ jobs:
           
           # The remote directory on Hostinger where the files will be placed
           server-dir: /public_html/splithouse/
+          protocol: ftps        # Add this
+          port: 21     

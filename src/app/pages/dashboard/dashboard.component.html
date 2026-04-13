@@ -186,6 +186,131 @@
           </div>
         }
       </div>
+    } @else if (activeTab() === 'expenses') {
+      <!-- Expenses View -->
+      <div class="view-content">
+        <div class="main-header">
+          <div class="header-titles">
+            <h1 class="page-title">Expenses</h1>
+            <p class="page-subtitle">Track and review all your shared expenses.</p>
+          </div>
+          <button class="btn-primary" (click)="openAddExpenseModal()">
+            <lucide-icon [img]="Plus" [size]="15" [strokeWidth]="2.5"></lucide-icon> Add Expense
+          </button>
+        </div>
+
+        <!-- Filters Bar -->
+        <div class="expense-filters">
+          <div class="filter-group">
+            <label class="filter-label">From</label>
+            <input type="date" class="input-clean filter-input" [(ngModel)]="expenseDateFrom" name="expenseDateFrom" />
+          </div>
+          <div class="filter-group">
+            <label class="filter-label">To</label>
+            <input type="date" class="input-clean filter-input" [(ngModel)]="expenseDateTo" name="expenseDateTo" />
+          </div>
+          <div class="filter-group filter-group-grow">
+            <label class="filter-label">Category</label>
+            <input type="text" class="input-clean filter-input" [(ngModel)]="expenseCategory" name="expenseCategory" placeholder="All categories" />
+          </div>
+          <button class="btn-primary filter-apply-btn" (click)="applyExpenseFilters()" [disabled]="isExpensesLoading()">
+            <lucide-icon [img]="SlidersHorizontal" [size]="15" [strokeWidth]="2"></lucide-icon>
+            Apply
+          </button>
+        </div>
+
+        @if (isExpensesLoading()) {
+          <div class="dash-loader">
+            <div class="spinner"></div>
+            <p>Loading expenses...</p>
+          </div>
+        } @else if (expensesError()) {
+          <div class="dash-error">
+            <div class="error-icon"><lucide-icon [img]="TriangleAlert" [size]="36" [strokeWidth]="1.5"></lucide-icon></div>
+            <p>{{ expensesError() }}</p>
+            <button class="btn-outline" (click)="loadExpenseSummary()">Try Again</button>
+          </div>
+        } @else if (expenses().length === 0) {
+          <div class="dash-empty">
+            <div class="empty-icon"><lucide-icon [img]="Receipt" [size]="52" [strokeWidth]="1.2"></lucide-icon></div>
+            <h3>No expenses found</h3>
+            <p>No expenses match your current filters.</p>
+          </div>
+        } @else {
+          <!-- Summary Cards -->
+          <div class="expense-summary-cards">
+            <div class="summary-card">
+              <div class="summary-card-icon">
+                <lucide-icon [img]="Receipt" [size]="20" [strokeWidth]="1.8"></lucide-icon>
+              </div>
+              <div class="summary-card-body">
+                <span class="summary-card-label">Total Expenses</span>
+                <span class="summary-card-value">{{ expenses().length }}</span>
+              </div>
+            </div>
+            <div class="summary-card">
+              <div class="summary-card-icon">
+                <lucide-icon [img]="DollarSign" [size]="20" [strokeWidth]="1.8"></lucide-icon>
+              </div>
+              <div class="summary-card-body">
+                <span class="summary-card-label">Total Amount</span>
+                <span class="summary-card-value">{{ getExpenseTotalAmount() | currency:'PKR':'symbol-narrow':'1.0-0' }}</span>
+              </div>
+            </div>
+            <div class="summary-card">
+              <div class="summary-card-icon">
+                <lucide-icon [img]="Tag" [size]="20" [strokeWidth]="1.8"></lucide-icon>
+              </div>
+              <div class="summary-card-body">
+                <span class="summary-card-label">Categories</span>
+                <span class="summary-card-value">{{ getUniqueCategories().length || '—' }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Expense List -->
+          <div class="expense-list">
+            <div class="expense-list-header">
+              <span class="col-date">Date</span>
+              <span class="col-name">Description</span>
+              <span class="col-category">Category</span>
+              <span class="col-group">Group</span>
+              <span class="col-amount">Amount</span>
+              <span class="col-actions"></span>
+            </div>
+
+            @for (expense of expenses(); track expense.id ?? expense.expenseId ?? $index) {
+              <div class="expense-row">
+                <span class="col-date expense-date">{{ getExpenseDate(expense) }}</span>
+                <div class="col-name expense-name-wrap">
+                  <div class="expense-dot"></div>
+                  <span class="expense-name">{{ getExpenseDisplayName(expense) }}</span>
+                </div>
+                <span class="col-category">
+                  @if (expense.category) {
+                    <span class="expense-tag">{{ expense.category }}</span>
+                  } @else {
+                    <span class="expense-tag-empty">—</span>
+                  }
+                </span>
+                <span class="col-group expense-group">{{ expense.groupName || expense.groupId || '—' }}</span>
+                <span class="col-amount expense-amount">
+                  {{ expense.amount != null ? (expense.amount | currency:'PKR':'symbol-narrow':'1.0-0') : '—' }}
+                </span>
+                <div class="col-actions expense-actions">
+                  <button class="exp-btn exp-btn-view" (click)="viewExpense(expense)" title="View details">
+                    <lucide-icon [img]="Eye" [size]="14" [strokeWidth]="2"></lucide-icon>
+                  </button>
+                  <button class="exp-btn exp-btn-delete" (click)="deleteExpense(expense)" title="Delete expense">
+                    <lucide-icon [img]="Trash2" [size]="14" [strokeWidth]="2"></lucide-icon>
+                  </button>
+                </div>
+              </div>
+            }
+          </div>
+        }
+      </div>
+
     } @else {
       <!-- Placeholder for Other Modules -->
       <div class="view-content placeholder-view">
@@ -287,6 +412,50 @@
             <button type="button" class="btn-submit btn-danger" (click)="confirmDelete()" [disabled]="isDeleting()">
               @if (!isDeleting()) {
                 <span>Yes, Delete House</span>
+              } @else {
+                <span class="btn-loader">
+                  <span class="spinner-small"></span> Deleting...
+                </span>
+              }
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  }
+
+  <!-- Delete Expense Modal Overlay -->
+  @if (isDeleteExpenseModalOpen()) {
+    <div class="modal-overlay">
+      <div class="modal-backdrop" (click)="closeDeleteExpenseModal()"></div>
+      <div class="modal-card modal-card-danger">
+
+        <div class="modal-header">
+          <div class="modal-icon-wrap danger-wrap">
+            <span class="modal-icon"><lucide-icon [img]="TriangleAlert" [size]="28" [strokeWidth]="1.8"></lucide-icon></span>
+          </div>
+          <button class="btn-close" (click)="closeDeleteExpenseModal()">×</button>
+        </div>
+
+        <div class="modal-body">
+          <h2 class="modal-title text-danger">Delete Expense?</h2>
+          <p class="modal-subtitle">
+            Are you sure you want to delete <strong>{{ getExpenseToDeleteName() }}</strong>?
+            This action cannot be undone.
+          </p>
+
+          @if (deleteExpenseError()) {
+            <div class="modal-error">
+              <lucide-icon [img]="TriangleAlert" [size]="14" [strokeWidth]="2"></lucide-icon> {{ deleteExpenseError() }}
+            </div>
+          }
+
+          <div class="modal-actions">
+            <button type="button" class="btn-cancel" (click)="closeDeleteExpenseModal()" [disabled]="isDeletingExpense()">Cancel</button>
+            <button type="button" class="btn-submit btn-danger" (click)="confirmDeleteExpense()" [disabled]="isDeletingExpense()">
+              @if (!isDeletingExpense()) {
+                <span>Yes, Delete Expense</span>
               } @else {
                 <span class="btn-loader">
                   <span class="spinner-small"></span> Deleting...
@@ -488,5 +657,376 @@
       </div>
     </div>
   }
+
+  <!-- =============================================
+       ADD EXPENSE MODAL (MULTI-STEP)
+       ============================================= -->
+  @if (isAddExpenseOpen()) {
+    <div class="modal-overlay">
+      <div class="modal-backdrop" (click)="closeAddExpenseModal()"></div>
+      <div class="modal-card ae-modal">
+
+        <!-- Loading overlay while fetching expense for edit -->
+        @if (isLoadingEditExpense()) {
+          <div class="ae-loading-overlay">
+            <div class="spinner"></div>
+            <p class="ae-loading-text">Loading expense…</p>
+          </div>
+        }
+
+        <!-- Step Indicator -->
+        <div class="ae-steps">
+          <div class="ae-step" [class.ae-step-active]="addExpenseStep() === 1" [class.ae-step-done]="addExpenseStep() > 1">
+            <span class="ae-step-dot">@if (addExpenseStep() > 1) { ✓ } @else { 1 }</span>
+            <span class="ae-step-label">Group</span>
+          </div>
+          <div class="ae-step-line" [class.ae-step-line-done]="addExpenseStep() > 1"></div>
+          <div class="ae-step" [class.ae-step-active]="addExpenseStep() === 2" [class.ae-step-done]="addExpenseStep() > 2">
+            <span class="ae-step-dot">@if (addExpenseStep() > 2) { ✓ } @else { 2 }</span>
+            <span class="ae-step-label">Members</span>
+          </div>
+          <div class="ae-step-line" [class.ae-step-line-done]="addExpenseStep() > 2"></div>
+          <div class="ae-step" [class.ae-step-active]="addExpenseStep() === 3">
+            <span class="ae-step-dot">3</span>
+            <span class="ae-step-label">Details</span>
+          </div>
+        </div>
+
+        <button class="btn-close ae-close" (click)="closeAddExpenseModal()">×</button>
+
+        <!-- ── STEP 1: Select Group ── -->
+        @if (addExpenseStep() === 1) {
+          <div class="ae-body">
+            <h2 class="modal-title">Which group?</h2>
+            <p class="modal-subtitle">Select the group this expense belongs to.</p>
+
+            @if (groups().length === 0) {
+              <div class="ae-empty">
+                <lucide-icon [img]="House" [size]="36" [strokeWidth]="1.2"></lucide-icon>
+                <p>No groups found. Create a house group first.</p>
+              </div>
+            } @else {
+              <div class="ae-group-grid">
+                @for (group of groups(); track group.id ?? group.groupId) {
+                  <button
+                    class="ae-group-card"
+                    [class.ae-group-selected]="(selectedExpenseGroup()?.id ?? selectedExpenseGroup()?.groupId) == (group.id ?? group.groupId)"
+                    (click)="selectExpenseGroup(group)"
+                  >
+                    <div class="ae-group-avatar">{{ (group.name || group.title || 'H').charAt(0).toUpperCase() }}</div>
+                    <span class="ae-group-name">{{ group.name || group.title }}</span>
+                  </button>
+                }
+              </div>
+            }
+
+            <div class="ae-footer">
+              <button class="btn-cancel" (click)="closeAddExpenseModal()">Cancel</button>
+              <button class="btn-submit" [disabled]="!selectedExpenseGroup()" (click)="goToStep2()">
+                Next <span class="ae-arrow">→</span>
+              </button>
+            </div>
+          </div>
+        }
+
+        <!-- ── STEP 2: Select Members + Paid Amounts ── -->
+        @if (addExpenseStep() === 2) {
+          <div class="ae-body">
+            <h2 class="modal-title">Who's splitting?</h2>
+            <p class="modal-subtitle">
+              Select members from <strong>{{ selectedExpenseGroup()?.name || selectedExpenseGroup()?.title }}</strong>
+              and enter how much each person paid.
+            </p>
+
+            @if (isLoadingAddExpenseMembers()) {
+              <div class="ae-loading"><div class="spinner"></div></div>
+            } @else if (addExpenseMembers().length === 0) {
+              <div class="ae-empty">
+                <lucide-icon [img]="Users" [size]="36" [strokeWidth]="1.2"></lucide-icon>
+                <p>No members in this group yet.</p>
+              </div>
+            } @else {
+              <div class="ae-members-list">
+                @for (member of addExpenseMembers(); track member.groupMemebrId) {
+                  @let memberId = member.groupMemebrId!;
+                  @let isSelected = isMemberSelected(memberId);
+                  <div class="ae-member-row" [class.ae-member-active]="isSelected">
+                    <!-- Checkbox -->
+                    <button
+                      class="ae-checkbox"
+                      [class.ae-checkbox-checked]="isSelected"
+                      (click)="toggleExpenseMember(memberId)"
+                      [attr.aria-label]="'Toggle ' + member.name"
+                    >
+                      @if (isSelected) { ✓ }
+                    </button>
+                    <!-- Avatar + Info -->
+                    <div class="ae-member-avatar">{{ getMemberInitials(member.name) }}</div>
+                    <div class="ae-member-info">
+                      <span class="ae-member-name">{{ member.name }}</span>
+                      <span class="ae-member-email">{{ member.email }}</span>
+                    </div>
+                    <!-- Paid amount input -->
+                    <div class="ae-paid-amount-wrap">
+                      <span class="ae-paid-currency">PKR</span>
+                      <input
+                        type="number"
+                        class="ae-paid-input"
+                        min="0"
+                        placeholder="0"
+                        [value]="memberPaidAmounts()[memberId] ?? '0'"
+                        (input)="setMemberPaidAmount(memberId, $any($event.target).value)"
+                        [disabled]="!isSelected"
+                      />
+                    </div>
+                  </div>
+                }
+              </div>
+
+              <!-- Running total bar -->
+              @if (getPaidAmountTotal() > 0) {
+                <div class="ae-total-bar">
+                  <span class="ae-total-label">Total expense</span>
+                  <span class="ae-total-value">PKR {{ getPaidAmountTotal() | number:'1.0-0' }}</span>
+                </div>
+              }
+            }
+
+            @if (addExpenseError()) {
+              <div class="modal-error" style="margin-top:0.75rem">
+                <lucide-icon [img]="TriangleAlert" [size]="14" [strokeWidth]="2"></lucide-icon> {{ addExpenseError() }}
+              </div>
+            }
+
+            <div class="ae-footer">
+              <button class="btn-cancel" (click)="addExpenseStep.set(1)">← Back</button>
+              <button class="btn-submit" (click)="goToStep3()">
+                Next <span class="ae-arrow">→</span>
+              </button>
+            </div>
+          </div>
+        }
+
+        <!-- ── STEP 3: Expense Details ── -->
+        @if (addExpenseStep() === 3) {
+          <div class="ae-body">
+            <h2 class="modal-title">{{ isEditingExpense() ? 'Edit expense' : 'Expense details' }}</h2>
+            <p class="modal-subtitle">
+              <strong>{{ selectedExpenseGroup()?.name || selectedExpenseGroup()?.title }}</strong>
+              &nbsp;·&nbsp; {{ selectedMemberIds().length }} member{{ selectedMemberIds().length !== 1 ? 's' : '' }}
+            </p>
+
+            <form (ngSubmit)="submitAddExpense()">
+
+              <!-- Amount summary carried from Step 2 -->
+              <div class="ae-amount-summary">
+                <div class="ae-amount-summary-main">
+                  <span class="ae-amount-summary-label">Total</span>
+                  <span class="ae-amount-summary-value">PKR {{ getPaidAmountTotal() | number:'1.0-0' }}</span>
+                </div>
+                <div class="ae-amount-summary-sub">
+                  {{ selectedMemberIds().length }} members
+                  &nbsp;·&nbsp;
+                  PKR {{ (getPaidAmountTotal() / selectedMemberIds().length) | number:'1.0-0' }} each
+                </div>
+              </div>
+
+              <div class="field">
+                <label class="field-label" for="aeTitle">Title</label>
+                <input id="aeTitle" class="input-clean" type="text"
+                  placeholder="e.g. QAU Nashta, Grocery run"
+                  [(ngModel)]="newExpenseTitle" name="aeTitle" required autofocus />
+              </div>
+
+              <div class="field">
+                <label class="field-label" for="aeDetails">Details <span class="field-optional">(optional)</span></label>
+                <textarea id="aeDetails" class="input-clean ae-textarea"
+                  placeholder="Add a short note about this expense"
+                  [(ngModel)]="newExpenseDetails" name="aeDetails"></textarea>
+              </div>
+
+              <div class="ae-row-fields">
+                <div class="field" style="flex:1">
+                  <label class="field-label" for="aeDate">Expense Date</label>
+                  <input id="aeDate" class="input-clean" type="date"
+                    [value]="newExpenseDate()"
+                    (change)="newExpenseDate.set($any($event.target).value)"
+                    required />
+                </div>
+                <div class="field" style="flex:1">
+                  <label class="field-label" for="aeCategory">Category</label>
+                  <select id="aeCategory" class="input-clean ae-select"
+                    [(ngModel)]="newExpenseCategory" name="aeCategory" required>
+                    <option value="" disabled>Select…</option>
+                    @for (cat of expenseCategories; track cat) {
+                      <option [value]="cat">{{ cat }}</option>
+                    }
+                  </select>
+                </div>
+              </div>
+
+              @if (addExpenseError()) {
+                <div class="modal-error">
+                  <lucide-icon [img]="TriangleAlert" [size]="14" [strokeWidth]="2"></lucide-icon> {{ addExpenseError() }}
+                </div>
+              }
+
+              <div class="ae-footer">
+                <button type="button" class="btn-cancel" (click)="addExpenseStep.set(2)" [disabled]="isSubmittingExpense()">← Back</button>
+                <button type="submit" class="btn-submit" [disabled]="isSubmittingExpense()">
+                  @if (!isSubmittingExpense()) {
+                    <span>{{ isEditingExpense() ? 'Save Changes' : 'Add Expense' }}</span>
+                  } @else {
+                    <span class="btn-loader"><span class="spinner-small"></span> Saving…</span>
+                  }
+                </button>
+              </div>
+            </form>
+          </div>
+        }
+
+      </div>
+    </div>
+  }
+
+  <!-- =============================================
+       EXPENSE VIEW PANEL
+       ============================================= -->
+  <div class="panel-backdrop" [class.open]="isExpenseViewOpen()" (click)="closeExpenseView()"></div>
+  <aside class="expense-view-panel" [class.open]="isExpenseViewOpen()">
+
+    <!-- Loading -->
+    @if (isExpenseViewLoading()) {
+      <div class="evp-loading">
+        <div class="spinner"></div>
+      </div>
+    }
+
+    <!-- Error -->
+    @if (expenseViewError() && !isExpenseViewLoading()) {
+      <div class="evp-error">
+        <lucide-icon [img]="TriangleAlert" [size]="32" [strokeWidth]="1.5"></lucide-icon>
+        <p>{{ expenseViewError() }}</p>
+        <button class="btn-close-panel" (click)="closeExpenseView()">Close</button>
+      </div>
+    }
+
+    <!-- Content -->
+    @if (!isExpenseViewLoading() && !expenseViewError() && expenseViewData()) {
+      @let detail = expenseViewData()!;
+      @let payer = getExpensePayer(detail);
+      @let owers = getExpenseOwers(detail);
+
+      <!-- Panel Header -->
+      <div class="evp-header">
+        <div class="evp-header-meta">
+          @if (detail.expense.category) {
+            <span class="evp-category-badge">{{ detail.expense.category }}</span>
+          }
+          <span class="evp-date">{{ formatDetailDate(detail.expense.expenseDate) }}</span>
+        </div>
+        <button class="btn-panel-close" (click)="closeExpenseView()" title="Close">
+          <lucide-icon [img]="X" [size]="18" [strokeWidth]="2.5"></lucide-icon>
+        </button>
+      </div>
+
+      <!-- Title + Group -->
+      <div class="evp-title-section">
+        <h2 class="evp-title">{{ detail.expense.title }}</h2>
+        @if (detail.expense.groupName) {
+          <span class="evp-group-name">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L20.66 7V17L12 22L3.34 17V7L12 2Z"/></svg>
+            {{ detail.expense.groupName }}
+          </span>
+        }
+        @if (detail.expense.details) {
+          <p class="evp-description">{{ detail.expense.details }}</p>
+        }
+      </div>
+
+      <!-- Amount Hero -->
+      <div class="evp-amount-hero">
+        <div class="evp-amount-main">
+          <span class="evp-currency">PKR</span>
+          <span class="evp-total-amount">{{ detail.expense.totalAmount | number:'1.0-0' }}</span>
+        </div>
+        <div class="evp-amount-sub">
+          <span class="evp-divider-line"></span>
+          <span class="evp-per-head">
+            ÷ {{ detail.expenseDetails.length }} people
+            &nbsp;·&nbsp;
+            <strong>PKR {{ detail.expense.amountPerHead | number:'1.0-0' }}</strong> each
+          </span>
+        </div>
+      </div>
+
+      <!-- Payer card -->
+      @if (payer) {
+        <div class="evp-section">
+          <div class="evp-section-label">Paid by</div>
+          <div class="evp-payer-card">
+            <div class="evp-avatar evp-avatar-payer">{{ getMemberInitials(payer.groupMemberName) }}</div>
+            <div class="evp-payer-info">
+              <span class="evp-payer-name">{{ payer.groupMemberName }}</span>
+              <span class="evp-payer-sub">Paid full amount · gets back PKR {{ payer.amountToGet | number:'1.0-0' }}</span>
+            </div>
+            <div class="evp-payer-amount">
+              PKR {{ payer.paidAmount | number:'1.0-0' }}
+              <span class="evp-paid-badge">Paid</span>
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- Members split -->
+      <div class="evp-section">
+        <div class="evp-section-label-row">
+          <span class="evp-section-label">Split</span>
+          <span class="evp-settled-count">
+            {{ owers.filter(m => m.isSettled).length }}/{{ owers.length }} settled
+          </span>
+        </div>
+
+        <div class="evp-members-list">
+          @for (member of owers; track member.expenseDetailsId) {
+            @let progress = getMemberSettlementProgress(member);
+            <div class="evp-member-row" [class.evp-member-settled]="member.isSettled">
+              <div class="evp-avatar" [class.evp-avatar-settled]="member.isSettled">
+                {{ getMemberInitials(member.groupMemberName) }}
+              </div>
+              <div class="evp-member-body">
+                <div class="evp-member-top">
+                  <span class="evp-member-name">{{ member.groupMemberName }}</span>
+                  @if (member.isSettled) {
+                    <span class="evp-status-badge evp-badge-settled">Settled</span>
+                  } @else {
+                    <span class="evp-status-badge evp-badge-pending">Pending</span>
+                  }
+                </div>
+                <div class="evp-progress-track">
+                  <div class="evp-progress-fill" [style.width.%]="progress"></div>
+                </div>
+              </div>
+              <div class="evp-member-amount">
+                <span class="evp-owe-amount" [class.evp-owe-settled]="member.isSettled">
+                  PKR {{ member.amountToPay != null ? (member.amountToPay | number:'1.0-0') : '—' }}
+                </span>
+                @if (!member.isSettled && member.pendingAmount) {
+                  <span class="evp-pending-label">{{ member.pendingAmount | number:'1.0-0' }} pending</span>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Footer meta -->
+      <div class="evp-footer-meta">
+        <span>Created by {{ detail.expense.createdBy }}</span>
+        <span>{{ formatDetailDate(detail.expense.dateCreated) }}</span>
+      </div>
+    }
+
+  </aside>
 
 </div>

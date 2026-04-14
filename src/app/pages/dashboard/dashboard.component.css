@@ -2287,6 +2287,58 @@
   margin-top: 0.15rem;
 }
 
+.btn-settle-member {
+  display: block;
+  margin-top: 0.4rem;
+  padding: 0.22rem 0.65rem;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: #111;
+  background: #f2f1ee;
+  border: 1px solid #e0e0de;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s;
+  white-space: nowrap;
+}
+
+.btn-settle-member:hover {
+  background: #e8e7e4;
+  border-color: #ccc;
+}
+
+/* Settle modal */
+.settle-summary-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #faf9f7;
+  border: 1px solid #e8e8e6;
+  border-radius: 10px;
+  padding: 0.75rem 1.1rem;
+  margin-top: 1.25rem;
+}
+
+.settle-summary-label {
+  font-size: 0.78rem;
+  color: #888;
+  font-weight: 500;
+}
+
+.settle-summary-pending {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #dc2626;
+}
+
+.field-hint {
+  display: block;
+  font-size: 0.72rem;
+  color: #aaa;
+  margin-top: 0.35rem;
+}
+
 /* Footer meta */
 .evp-footer-meta {
   display: flex;
@@ -2511,4 +2563,88 @@
   .modal-body {
     padding: 0 1rem 1.25rem;
   }
+}
+
+/* ============================================================
+   SETTLEMENT LIST
+   ============================================================ */
+
+.settlement-list {
+  background: #fff;
+  border: 1px solid #e8e8e6;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-top: 1.25rem;
+}
+
+.settlement-list-header,
+.settlement-row {
+  display: grid;
+  grid-template-columns: 120px 1fr 1fr 140px 120px;
+  align-items: center;
+  padding: 0.75rem 1.25rem;
+  gap: 0.5rem;
+}
+
+.settlement-list-header {
+  background: #faf9f7;
+  border-bottom: 1px solid #e8e8e6;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #aaa;
+}
+
+.settlement-row {
+  border-bottom: 1px solid #f0efed;
+  transition: background 0.12s;
+}
+
+.settlement-row:last-child {
+  border-bottom: none;
+}
+
+.settlement-row:hover {
+  background: #faf9f7;
+}
+
+.settlement-date {
+  font-size: 0.8rem;
+  color: #888;
+  white-space: nowrap;
+}
+
+.settlement-member {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: #222;
+  font-weight: 500;
+}
+
+.settlement-dot-from {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #111;
+  flex-shrink: 0;
+}
+
+.settlement-arrow {
+  color: #aaa;
+  flex-shrink: 0;
+}
+
+.settlement-group {
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.settlement-amount {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #111;
+  text-align: right;
 }

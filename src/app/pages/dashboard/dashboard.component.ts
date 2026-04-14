@@ -10,6 +10,7 @@ import {
   ExpenseMemberDetail,
   CreateExpenseRequest,
 } from '../../services/expense.service';
+import { SettlementService, SettlementSummary, CreateSettlementPayload } from '../../services/settlement.service';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import {
@@ -32,6 +33,7 @@ import {
   Pencil,
   Trash2,
   Plus,
+  ArrowRight,
 } from 'lucide-angular';
 
 @Component({
@@ -91,6 +93,24 @@ export class DashboardComponent implements OnInit {
   readonly expenseCategories = ['Flat', 'Trip', 'Food', 'Utilities', 'Entertainment', 'Other'];
   readonly parseFloat = parseFloat;
 
+  // ---- Settlements ----
+  settlements = signal<SettlementSummary[]>([]);
+  isSettlementsLoading = signal(false);
+  settlementsError = signal('');
+
+  // Filters
+  settlementDateFrom = signal('2025-06-01');
+  settlementDateTo = signal('2026-12-30');
+
+  // Settle Member Modal
+  isSettleModalOpen = signal(false);
+  settleMember = signal<ExpenseMemberDetail | null>(null);
+  settleExpenseDetail = signal<ExpenseDetailResponse | null>(null);
+  settleDate = signal<string>(new Date().toISOString().split('T')[0]);
+  settleAmount = signal<string>('');
+  isSubmittingSettle = signal(false);
+  settleError = signal('');
+
   readonly House = House;
   readonly Receipt = Receipt;
   readonly Handshake = Handshake;
@@ -109,6 +129,7 @@ export class DashboardComponent implements OnInit {
   readonly Pencil = Pencil;
   readonly Trash2 = Trash2;
   readonly Plus = Plus;
+  readonly ArrowRight = ArrowRight;
 
   isMobileNavOpen = signal(false);
 
@@ -156,6 +177,7 @@ export class DashboardComponent implements OnInit {
   constructor(
     private groupService: GroupService,
     private expenseService: ExpenseService,
+    private settlementService: SettlementService,
     private authService: AuthService,
     private router: Router
   ) {}
@@ -169,6 +191,9 @@ export class DashboardComponent implements OnInit {
     this.isMobileNavOpen.set(false);
     if (tab === 'expenses' && this.expenses().length === 0 && !this.isExpensesLoading()) {
       this.loadExpenseSummary();
+    }
+    if (tab === 'settlements' && this.settlements().length === 0 && !this.isSettlementsLoading()) {
+      this.loadSettlementSummary();
     }
   }
 
@@ -201,6 +226,127 @@ export class DashboardComponent implements OnInit {
   applyExpenseFilters() {
     this.expenses.set([]);
     this.loadExpenseSummary();
+  }
+
+  loadSettlementSummary() {
+    const userId = this.authService.currentUserId();
+    if (!userId) return;
+
+    this.isSettlementsLoading.set(true);
+    this.settlementsError.set('');
+
+    this.settlementService
+      .getSettlementSummary(userId, {
+        dateFrom: this.settlementDateFrom(),
+        dateTo: this.settlementDateTo(),
+      })
+      .subscribe({
+        next: (data) => {
+          this.settlements.set(Array.isArray(data) ? data : []);
+          this.isSettlementsLoading.set(false);
+        },
+        error: (err) => {
+          console.error('Failed to load settlement summary:', err);
+          this.settlementsError.set('Failed to load settlements. Please try again.');
+          this.isSettlementsLoading.set(false);
+        },
+      });
+  }
+
+  applySettlementFilters() {
+    this.settlements.set([]);
+    this.loadSettlementSummary();
+  }
+
+  getSettlementDate(settlement: SettlementSummary): string {
+    if (!settlement.settlementDate) return '';
+    const d = new Date(settlement.settlementDate);
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  }
+
+  getSettlementsTotalAmount(): number {
+    return this.settlements().reduce((sum, s) => sum + Math.abs(s.settlementAmount ?? 0), 0);
+  }
+
+  getSettlementsUniqueGroups(): string[] {
+    const groups = this.settlements()
+      .map((s) => s.groupName)
+      .filter((g): g is string => !!g);
+    return [...new Set(groups)];
+  }
+
+  openSettleModal(member: ExpenseMemberDetail, detail: ExpenseDetailResponse) {
+    this.settleMember.set(member);
+    this.settleExpenseDetail.set(detail);
+    this.settleDate.set(new Date().toISOString().split('T')[0]);
+    this.settleAmount.set(String(member.pendingAmount ?? member.amountToPay ?? ''));
+    this.settleError.set('');
+    this.isSettleModalOpen.set(true);
+  }
+
+  closeSettleModal() {
+    if (this.isSubmittingSettle()) return;
+    this.isSettleModalOpen.set(false);
+    this.settleMember.set(null);
+    this.settleExpenseDetail.set(null);
+  }
+
+  confirmSettle() {
+    const member = this.settleMember();
+    const detail = this.settleExpenseDetail();
+    if (!member || !detail) return;
+
+    const amount = parseFloat(this.settleAmount());
+    const maxPending = member.pendingAmount ?? member.amountToPay ?? 0;
+
+    if (!amount || amount <= 0) {
+      this.settleError.set('Settlement amount must be greater than 0.');
+      return;
+    }
+    if (amount > Math.abs(maxPending)) {
+      this.settleError.set(`Amount cannot exceed the pending amount of PKR ${Math.abs(maxPending)}.`);
+      return;
+    }
+    if (!this.settleDate()) {
+      this.settleError.set('Please select a settlement date.');
+      return;
+    }
+
+    // The original expense payer is the one receiving this settlement
+    const receiver = this.getExpensePayer(detail);
+    if (!receiver) {
+      this.settleError.set('Could not identify the expense payer. Please try again.');
+      return;
+    }
+
+    const payload: CreateSettlementPayload = {
+      expenseSettlementId: null,
+      expenseId: detail.expense.expenseId,
+      payerExpenseDetailsId: member.expenseDetailsId,
+      receiverExpenseDetailsId: receiver.expenseDetailsId,
+      settlementAmount: amount,
+      settlementType: 'Paid',
+      paidBy: member.groupMemberId,
+      paidTo: receiver.groupMemberId,
+      settlementDate: this.settleDate(),
+    };
+
+    this.isSubmittingSettle.set(true);
+    this.settleError.set('');
+
+    this.settlementService.createSettlement(payload).subscribe({
+      next: () => {
+        this.isSubmittingSettle.set(false);
+        this.closeSettleModal();
+        // Refresh the expense detail panel to reflect updated settlement state
+        this.viewExpense({ expenseId: detail.expense.expenseId } as any);
+      },
+      error: (err) => {
+        console.error('Failed to record settlement:', err);
+        this.isSubmittingSettle.set(false);
+        this.settleError.set('Failed to record settlement. Please try again.');
+      },
+    });
   }
 
   getExpenseDisplayName(expense: Expense): string {

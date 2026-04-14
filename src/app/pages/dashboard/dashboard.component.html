@@ -311,6 +311,112 @@
         }
       </div>
 
+    } @else if (activeTab() === 'settlements') {
+      <!-- Settlements View -->
+      <div class="view-content">
+        <div class="main-header">
+          <div class="header-titles">
+            <h1 class="page-title">Settlements</h1>
+            <p class="page-subtitle">View all payments made between house members.</p>
+          </div>
+        </div>
+
+        <!-- Filters Bar -->
+        <div class="expense-filters">
+          <div class="filter-group">
+            <label class="filter-label">From</label>
+            <input type="date" class="input-clean filter-input" [(ngModel)]="settlementDateFrom" name="settlementDateFrom" />
+          </div>
+          <div class="filter-group">
+            <label class="filter-label">To</label>
+            <input type="date" class="input-clean filter-input" [(ngModel)]="settlementDateTo" name="settlementDateTo" />
+          </div>
+          <button class="btn-primary filter-apply-btn" (click)="applySettlementFilters()" [disabled]="isSettlementsLoading()">
+            <lucide-icon [img]="SlidersHorizontal" [size]="15" [strokeWidth]="2"></lucide-icon>
+            Apply
+          </button>
+        </div>
+
+        @if (isSettlementsLoading()) {
+          <div class="dash-loader">
+            <div class="spinner"></div>
+            <p>Loading settlements...</p>
+          </div>
+        } @else if (settlementsError()) {
+          <div class="dash-error">
+            <div class="error-icon"><lucide-icon [img]="TriangleAlert" [size]="36" [strokeWidth]="1.5"></lucide-icon></div>
+            <p>{{ settlementsError() }}</p>
+            <button class="btn-outline" (click)="loadSettlementSummary()">Try Again</button>
+          </div>
+        } @else if (settlements().length === 0) {
+          <div class="dash-empty">
+            <div class="empty-icon"><lucide-icon [img]="Handshake" [size]="52" [strokeWidth]="1.2"></lucide-icon></div>
+            <h3>No settlements found</h3>
+            <p>No settlements match your current date range.</p>
+          </div>
+        } @else {
+          <!-- Summary Cards -->
+          <div class="expense-summary-cards">
+            <div class="summary-card">
+              <div class="summary-card-icon">
+                <lucide-icon [img]="Handshake" [size]="20" [strokeWidth]="1.8"></lucide-icon>
+              </div>
+              <div class="summary-card-body">
+                <span class="summary-card-label">Total Settlements</span>
+                <span class="summary-card-value">{{ settlements().length }}</span>
+              </div>
+            </div>
+            <div class="summary-card">
+              <div class="summary-card-icon">
+                <lucide-icon [img]="DollarSign" [size]="20" [strokeWidth]="1.8"></lucide-icon>
+              </div>
+              <div class="summary-card-body">
+                <span class="summary-card-label">Total Amount</span>
+                <span class="summary-card-value">{{ getSettlementsTotalAmount() | currency:'PKR':'symbol-narrow':'1.0-0' }}</span>
+              </div>
+            </div>
+            <div class="summary-card">
+              <div class="summary-card-icon">
+                <lucide-icon [img]="Users" [size]="20" [strokeWidth]="1.8"></lucide-icon>
+              </div>
+              <div class="summary-card-body">
+                <span class="summary-card-label">Groups</span>
+                <span class="summary-card-value">{{ getSettlementsUniqueGroups().length || '—' }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Settlement List -->
+          <div class="settlement-list">
+            <div class="settlement-list-header">
+              <span class="col-date">Date</span>
+              <span class="col-paid-by">Paid By</span>
+              <span class="col-paid-to">Paid To</span>
+              <span class="col-group">Group</span>
+              <span class="col-amount">Amount</span>
+            </div>
+
+            @for (settlement of settlements(); track settlement.expenseSettlementId) {
+              <div class="settlement-row">
+                <span class="col-date settlement-date">{{ getSettlementDate(settlement) }}</span>
+                <div class="col-paid-by settlement-member">
+                  <div class="settlement-dot settlement-dot-from"></div>
+                  <span>{{ settlement.paidBy }}</span>
+                </div>
+                <div class="col-paid-to settlement-member">
+                  <lucide-icon class="settlement-arrow" [img]="ArrowRight" [size]="13" [strokeWidth]="2"></lucide-icon>
+                  <span>{{ settlement.paidTo }}</span>
+                </div>
+                <span class="col-group settlement-group">{{ settlement.groupName || '—' }}</span>
+                <span class="col-amount settlement-amount">
+                  {{ (settlement.settlementAmount | currency:'PKR':'symbol-narrow':'1.0-0') }}
+                </span>
+              </div>
+            }
+          </div>
+        }
+      </div>
+
     } @else {
       <!-- Placeholder for Other Modules -->
       <div class="view-content placeholder-view">
@@ -968,7 +1074,10 @@
             <div class="evp-avatar evp-avatar-payer">{{ getMemberInitials(payer.groupMemberName) }}</div>
             <div class="evp-payer-info">
               <span class="evp-payer-name">{{ payer.groupMemberName }}</span>
-              <span class="evp-payer-sub">Paid full amount · gets back PKR {{ payer.amountToGet | number:'1.0-0' }}</span>
+              <span class="evp-payer-sub">
+                {{ payer.paidAmount >= detail.expense.totalAmount ? 'Paid full amount' : 'Paid most' }}
+                @if (payer.amountToGet) { · gets back PKR {{ payer.amountToGet | number:'1.0-0' }} }
+              </span>
             </div>
             <div class="evp-payer-amount">
               PKR {{ payer.paidAmount | number:'1.0-0' }}
@@ -1012,7 +1121,8 @@
                   PKR {{ member.amountToPay != null ? (member.amountToPay | number:'1.0-0') : '—' }}
                 </span>
                 @if (!member.isSettled && member.pendingAmount) {
-                  <span class="evp-pending-label">{{ member.pendingAmount | number:'1.0-0' }} pending</span>
+                  <span class="evp-pending-label">-{{ member.pendingAmount | number:'1.0-0' }} pending</span>
+                  <button class="btn-settle-member" (click)="openSettleModal(member, detail)">Settle</button>
                 }
               </div>
             </div>
@@ -1028,5 +1138,80 @@
     }
 
   </aside>
+
+  <!-- Settle Member Modal -->
+  @if (isSettleModalOpen()) {
+    @let member = settleMember();
+    @let sDetail = settleExpenseDetail();
+    @if (member && sDetail) {
+      <div class="modal-overlay">
+        <div class="modal-backdrop" (click)="closeSettleModal()"></div>
+        <div class="modal-card">
+
+          <div class="modal-header">
+            <div class="modal-icon-wrap">
+              <span class="modal-icon"><lucide-icon [img]="Handshake" [size]="28" [strokeWidth]="1.8"></lucide-icon></span>
+            </div>
+            <button class="btn-close" (click)="closeSettleModal()" [disabled]="isSubmittingSettle()">×</button>
+          </div>
+
+          <div class="modal-body">
+            <h2 class="modal-title">Record Settlement</h2>
+            <p class="modal-subtitle">
+              <strong>{{ member.groupMemberName }}</strong> paying
+              <strong>{{ getExpensePayer(sDetail)?.groupMemberName }}</strong>
+              for <strong>{{ sDetail.expense.title }}</strong>.
+            </p>
+
+            <!-- Pending summary -->
+            <div class="settle-summary-row">
+              <span class="settle-summary-label">Total pending</span>
+              <span class="settle-summary-pending">PKR {{ (member.pendingAmount ?? member.amountToPay ?? 0) | number:'1.0-0' }}</span>
+            </div>
+
+            <!-- Editable amount -->
+            <div class="field" style="margin-top: 1rem;">
+              <label class="field-label" for="settleAmount">Settlement Amount</label>
+              <input
+                id="settleAmount"
+                class="input-clean"
+                type="number"
+                min="1"
+                [max]="member.pendingAmount ?? member.amountToPay ?? 0"
+                placeholder="Enter amount"
+                [(ngModel)]="settleAmount"
+                name="settleAmount"
+              />
+              <span class="field-hint">Can be partial — e.g. pay PKR 50 now and the rest later.</span>
+            </div>
+
+            <!-- Date -->
+            <div class="field" style="margin-top: 0.85rem;">
+              <label class="field-label" for="settleDate">Settlement Date</label>
+              <input
+                id="settleDate"
+                class="input-clean"
+                type="date"
+                [(ngModel)]="settleDate"
+                name="settleDate"
+              />
+            </div>
+
+            @if (settleError()) {
+              <p class="field-error">{{ settleError() }}</p>
+            }
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" class="btn-cancel" (click)="closeSettleModal()" [disabled]="isSubmittingSettle()">Cancel</button>
+            <button type="button" class="btn-submit" (click)="confirmSettle()" [disabled]="isSubmittingSettle()">
+              {{ isSubmittingSettle() ? 'Recording...' : 'Confirm Settlement' }}
+            </button>
+          </div>
+
+        </div>
+      </div>
+    }
+  }
 
 </div>

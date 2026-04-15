@@ -10,7 +10,8 @@
       "Bash(npm install *)",
       "Bash(where magick *)",
       "Bash(where convert *)",
-      "Bash(where inkscape *)"
+      "Bash(where inkscape *)",
+      "Bash(npm show *)"
     ]
   }
 }

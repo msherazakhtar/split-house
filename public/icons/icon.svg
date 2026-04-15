@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Background -->
+  <rect width="512" height="512" rx="96" fill="#111111"/>
+  <!-- House shape -->
+  <polygon points="256,80 440,220 440,440 72,440 72,220" fill="#faf9f7"/>
+  <!-- Door -->
+  <rect x="210" y="300" width="92" height="140" rx="46" fill="#111111"/>
+  <!-- Split line (the bill-splitting concept) -->
+  <line x1="256" y1="300" x2="256" y2="440" stroke="#faf9f7" stroke-width="4"/>
+  <!-- Roof accent -->
+  <polygon points="256,70 450,225 62,225" fill="none" stroke="#faf9f7" stroke-width="8" stroke-linejoin="round"/>
+</svg>

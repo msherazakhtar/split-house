@@ -5,7 +5,12 @@
       "Bash(npm run:*)",
       "WebFetch(domain:compoundplanning.com)",
       "Bash(curl -s https://compoundplanning.com/)",
-      "Bash(curl -s \"https://compoundplanning.com/_next/static/css/056ff5098cd72706.css\")"
+      "Bash(curl -s \"https://compoundplanning.com/_next/static/css/056ff5098cd72706.css\")",
+      "Bash(npx ng *)",
+      "Bash(npm install *)",
+      "Bash(where magick *)",
+      "Bash(where convert *)",
+      "Bash(where inkscape *)"
     ]
   }
 }

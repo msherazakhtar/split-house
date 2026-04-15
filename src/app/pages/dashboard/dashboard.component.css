@@ -1469,11 +1469,19 @@
 }
 
 /* Step indicator */
+.ae-modal-header {
+  display: flex;
+  align-items: center;
+  padding-right: 0.75rem;
+}
+
 .ae-steps {
   display: flex;
   align-items: center;
-  padding: 1.4rem 1.75rem 0;
+  padding: 1.4rem 1rem 0 1.75rem;
   gap: 0;
+  flex: 1;
+  min-width: 0;
 }
 
 .ae-step {
@@ -1541,9 +1549,25 @@
 }
 
 .ae-close {
-  position: absolute;
-  top: 0.85rem;
-  right: 1rem;
+  flex-shrink: 0;
+  margin-top: 0.5rem;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: transparent;
+  border: none;
+  color: #aaa;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, color 0.15s;
+  align-self: flex-start;
+}
+
+.ae-close:hover {
+  background: #f2f1ee;
+  color: #111;
 }
 
 /* Body */
@@ -2103,6 +2127,12 @@
 }
 
 /* Payer card */
+.evp-payers-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
 .evp-payer-card {
   display: flex;
   align-items: center;
@@ -2337,6 +2367,79 @@
   font-size: 0.72rem;
   color: #aaa;
   margin-top: 0.35rem;
+}
+
+/* Settle receiver selection */
+.settle-receiver-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.35rem;
+}
+
+.settle-receiver-option {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.7rem 0.9rem;
+  background: #faf9f7;
+  border: 1.5px solid #e8e8e6;
+  border-radius: 10px;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.settle-receiver-option:hover {
+  border-color: #bbb;
+  background: #f2f1ee;
+}
+
+.settle-receiver-selected {
+  border-color: #111 !important;
+  background: #fff !important;
+}
+
+.settle-receiver-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #111;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  font-family: 'Inter', sans-serif;
+}
+
+.settle-receiver-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.settle-receiver-name {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #111;
+}
+
+.settle-receiver-sub {
+  display: block;
+  font-size: 0.72rem;
+  color: #888;
+  margin-top: 0.1rem;
+}
+
+.settle-receiver-check {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #111;
+  flex-shrink: 0;
 }
 
 /* Footer meta */

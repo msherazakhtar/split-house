@@ -17,12 +17,15 @@
   border-right: 1px solid #e0e0de;
   display: flex;
   flex-direction: column;
-  padding: 2rem 3rem 3rem;
+  padding: 2rem 3rem;
   position: relative;
   animation: fadeUp 0.55s ease-out both;
 }
 
 .back-link {
+  position: absolute;
+  top: 2rem;
+  left: 3rem;
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
@@ -31,7 +34,6 @@
   font-size: 0.82rem;
   font-weight: 500;
   transition: color 0.15s;
-  margin-bottom: auto;
   width: fit-content;
 }
 
@@ -43,7 +45,8 @@
   display: flex;
   flex-direction: column;
   gap: 2.5rem;
-  padding-top: 4rem;
+  margin: auto 0;
+  padding: 1rem 0;
 }
 
 .brand-logo {
@@ -70,7 +73,7 @@
   color: #555;
   line-height: 1.75;
   max-width: 360px;
-  margin-top: -1rem;
+  margin-top: 0.75rem;
 }
 
 /* Feature list */
@@ -429,11 +432,16 @@
   .login-brand {
     border-right: none;
     border-bottom: 1px solid #e0e0de;
-    padding: 1.5rem 2rem 2.5rem;
+    padding: 4rem 2rem 2.5rem;
+  }
+
+  .back-link {
+    top: 1.5rem;
+    left: 2rem;
   }
 
   .brand-content {
-    padding-top: 2rem;
+    margin: 0;
     gap: 2rem;
   }
 
@@ -451,6 +459,16 @@
 }
 
 @media (max-width: 480px) {
-  .login-brand  { padding: 1.25rem 1.25rem 2rem; }
-  .login-form-panel { padding: 2rem 1.25rem 2.5rem; }
+  .login-brand {
+    padding: 3.75rem 1.25rem 2rem;
+  }
+
+  .back-link {
+    top: 1.25rem;
+    left: 1.25rem;
+  }
+
+  .login-form-panel {
+    padding: 2rem 1.25rem 2.5rem;
+  }
 }

@@ -106,6 +106,7 @@ export class DashboardComponent implements OnInit {
   isSettleModalOpen = signal(false);
   settleMember = signal<ExpenseMemberDetail | null>(null);
   settleExpenseDetail = signal<ExpenseDetailResponse | null>(null);
+  settleReceiver = signal<ExpenseMemberDetail | null>(null);
   settleDate = signal<string>(new Date().toISOString().split('T')[0]);
   settleAmount = signal<string>('');
   isSubmittingSettle = signal(false);
@@ -279,9 +280,44 @@ export class DashboardComponent implements OnInit {
     this.settleMember.set(member);
     this.settleExpenseDetail.set(detail);
     this.settleDate.set(new Date().toISOString().split('T')[0]);
-    this.settleAmount.set(String(member.pendingAmount ?? member.amountToPay ?? ''));
     this.settleError.set('');
+    this.settleAmount.set('');
+
+    // Auto-select receiver when there is only one payer; otherwise let user pick
+    const payers = this.getExpensePayers(detail);
+    const autoReceiver = payers.length === 1 ? payers[0] : null;
+    this.settleReceiver.set(autoReceiver);
+    if (autoReceiver) {
+      this.settleAmount.set(String(this.getSettleMaxAmount(member, autoReceiver)));
+    }
+
     this.isSettleModalOpen.set(true);
+  }
+
+  selectSettleReceiver(receiver: ExpenseMemberDetail) {
+    this.settleReceiver.set(receiver);
+    this.settleError.set('');
+    const member = this.settleMember();
+    if (member) {
+      this.settleAmount.set(String(this.getSettleMaxAmount(member, receiver)));
+    }
+  }
+
+  // Max amount = smaller of what the ower still owes vs what the receiver still needs back
+  getSettleMaxAmount(member: ExpenseMemberDetail, receiver: ExpenseMemberDetail): number {
+    const owedByMember = Math.abs(member.pendingAmount ?? member.amountToPay ?? 0);
+    const owedToReceiver = receiver.amountToGet ?? 0;
+    return Math.min(owedByMember, owedToReceiver);
+  }
+
+  clampSettleAmount() {
+    const val = parseFloat(this.settleAmount());
+    const member = this.settleMember();
+    const receiver = this.settleReceiver();
+    if (!member || !receiver || isNaN(val)) return;
+    const max = this.getSettleMaxAmount(member, receiver);
+    if (val > max) this.settleAmount.set(String(max));
+    if (val < 0) this.settleAmount.set('0');
   }
 
   closeSettleModal() {
@@ -289,6 +325,7 @@ export class DashboardComponent implements OnInit {
     this.isSettleModalOpen.set(false);
     this.settleMember.set(null);
     this.settleExpenseDetail.set(null);
+    this.settleReceiver.set(null);
   }
 
   confirmSettle() {
@@ -296,26 +333,25 @@ export class DashboardComponent implements OnInit {
     const detail = this.settleExpenseDetail();
     if (!member || !detail) return;
 
+    const receiver = this.settleReceiver();
+    if (!receiver) {
+      this.settleError.set('Please select who you are paying.');
+      return;
+    }
+
     const amount = parseFloat(this.settleAmount());
-    const maxPending = member.pendingAmount ?? member.amountToPay ?? 0;
+    const maxAmount = this.getSettleMaxAmount(member, receiver);
 
     if (!amount || amount <= 0) {
       this.settleError.set('Settlement amount must be greater than 0.');
       return;
     }
-    if (amount > Math.abs(maxPending)) {
-      this.settleError.set(`Amount cannot exceed the pending amount of PKR ${Math.abs(maxPending)}.`);
+    if (amount > maxAmount) {
+      this.settleError.set(`Amount cannot exceed PKR ${maxAmount.toLocaleString()}.`);
       return;
     }
     if (!this.settleDate()) {
       this.settleError.set('Please select a settlement date.');
-      return;
-    }
-
-    // The original expense payer is the one receiving this settlement
-    const receiver = this.getExpensePayer(detail);
-    if (!receiver) {
-      this.settleError.set('Could not identify the expense payer. Please try again.');
       return;
     }
 
@@ -580,8 +616,24 @@ export class DashboardComponent implements OnInit {
   }
 
   // Returns the member who paid (amountToPay is null = they initiated/paid)
+  // Returns ALL members who paid into the expense (amountToPay === null)
+  getExpensePayers(detail: ExpenseDetailResponse): ExpenseMemberDetail[] {
+    return detail.expenseDetails.filter((m) => m.amountToPay === null);
+  }
+
+  // Returns the single primary payer (highest paidAmount) — used for settle flow
   getExpensePayer(detail: ExpenseDetailResponse): ExpenseMemberDetail | null {
-    return detail.expenseDetails.find((m) => m.amountToPay === null) ?? null;
+    const payers = this.getExpensePayers(detail);
+    if (payers.length === 0) return null;
+    return payers.reduce((top, m) => (m.paidAmount > top.paidAmount ? m : top));
+  }
+
+  // Label shown under each payer card
+  getPayerLabel(payer: ExpenseMemberDetail, allPayers: ExpenseMemberDetail[], totalAmount: number): string {
+    if (payer.paidAmount >= totalAmount) return 'Paid full amount';
+    if (allPayers.length === 1) return 'Paid most';
+    const maxPaid = Math.max(...allPayers.map((p) => p.paidAmount));
+    return payer.paidAmount === maxPaid ? 'Paid most' : 'Also paid';
   }
 
   // Returns members who owe money

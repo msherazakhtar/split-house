@@ -780,25 +780,28 @@
           </div>
         }
 
-        <!-- Step Indicator -->
-        <div class="ae-steps">
-          <div class="ae-step" [class.ae-step-active]="addExpenseStep() === 1" [class.ae-step-done]="addExpenseStep() > 1">
-            <span class="ae-step-dot">@if (addExpenseStep() > 1) { ✓ } @else { 1 }</span>
-            <span class="ae-step-label">Group</span>
+        <!-- Step Indicator + Close -->
+        <div class="ae-modal-header">
+          <div class="ae-steps">
+            <div class="ae-step" [class.ae-step-active]="addExpenseStep() === 1" [class.ae-step-done]="addExpenseStep() > 1">
+              <span class="ae-step-dot">@if (addExpenseStep() > 1) { ✓ } @else { 1 }</span>
+              <span class="ae-step-label">Group</span>
+            </div>
+            <div class="ae-step-line" [class.ae-step-line-done]="addExpenseStep() > 1"></div>
+            <div class="ae-step" [class.ae-step-active]="addExpenseStep() === 2" [class.ae-step-done]="addExpenseStep() > 2">
+              <span class="ae-step-dot">@if (addExpenseStep() > 2) { ✓ } @else { 2 }</span>
+              <span class="ae-step-label">Members</span>
+            </div>
+            <div class="ae-step-line" [class.ae-step-line-done]="addExpenseStep() > 2"></div>
+            <div class="ae-step" [class.ae-step-active]="addExpenseStep() === 3">
+              <span class="ae-step-dot">3</span>
+              <span class="ae-step-label">Details</span>
+            </div>
           </div>
-          <div class="ae-step-line" [class.ae-step-line-done]="addExpenseStep() > 1"></div>
-          <div class="ae-step" [class.ae-step-active]="addExpenseStep() === 2" [class.ae-step-done]="addExpenseStep() > 2">
-            <span class="ae-step-dot">@if (addExpenseStep() > 2) { ✓ } @else { 2 }</span>
-            <span class="ae-step-label">Members</span>
-          </div>
-          <div class="ae-step-line" [class.ae-step-line-done]="addExpenseStep() > 2"></div>
-          <div class="ae-step" [class.ae-step-active]="addExpenseStep() === 3">
-            <span class="ae-step-dot">3</span>
-            <span class="ae-step-label">Details</span>
-          </div>
+          <button class="ae-close" (click)="closeAddExpenseModal()" title="Close">
+            <lucide-icon [img]="X" [size]="16" [strokeWidth]="2.5"></lucide-icon>
+          </button>
         </div>
-
-        <button class="btn-close ae-close" (click)="closeAddExpenseModal()">×</button>
 
         <!-- ── STEP 1: Select Group ── -->
         @if (addExpenseStep() === 1) {
@@ -1020,7 +1023,7 @@
     <!-- Content -->
     @if (!isExpenseViewLoading() && !expenseViewError() && expenseViewData()) {
       @let detail = expenseViewData()!;
-      @let payer = getExpensePayer(detail);
+      @let payers = getExpensePayers(detail);
       @let owers = getExpenseOwers(detail);
 
       <!-- Panel Header -->
@@ -1066,23 +1069,27 @@
         </div>
       </div>
 
-      <!-- Payer card -->
-      @if (payer) {
+      <!-- Payer cards (one per payer) -->
+      @if (payers.length > 0) {
         <div class="evp-section">
           <div class="evp-section-label">Paid by</div>
-          <div class="evp-payer-card">
-            <div class="evp-avatar evp-avatar-payer">{{ getMemberInitials(payer.groupMemberName) }}</div>
-            <div class="evp-payer-info">
-              <span class="evp-payer-name">{{ payer.groupMemberName }}</span>
-              <span class="evp-payer-sub">
-                {{ payer.paidAmount >= detail.expense.totalAmount ? 'Paid full amount' : 'Paid most' }}
-                @if (payer.amountToGet) { · gets back PKR {{ payer.amountToGet | number:'1.0-0' }} }
-              </span>
-            </div>
-            <div class="evp-payer-amount">
-              PKR {{ payer.paidAmount | number:'1.0-0' }}
-              <span class="evp-paid-badge">Paid</span>
-            </div>
+          <div class="evp-payers-list">
+            @for (payer of payers; track payer.expenseDetailsId) {
+              <div class="evp-payer-card">
+                <div class="evp-avatar evp-avatar-payer">{{ getMemberInitials(payer.groupMemberName) }}</div>
+                <div class="evp-payer-info">
+                  <span class="evp-payer-name">{{ payer.groupMemberName }}</span>
+                  <span class="evp-payer-sub">
+                    {{ getPayerLabel(payer, payers, detail.expense.totalAmount) }}
+                    @if (payer.amountToGet) { · gets back PKR {{ payer.amountToGet | number:'1.0-0' }} }
+                  </span>
+                </div>
+                <div class="evp-payer-amount">
+                  PKR {{ payer.paidAmount | number:'1.0-0' }}
+                  <span class="evp-paid-badge">Paid</span>
+                </div>
+              </div>
+            }
           </div>
         </div>
       }
@@ -1158,32 +1165,60 @@
           <div class="modal-body">
             <h2 class="modal-title">Record Settlement</h2>
             <p class="modal-subtitle">
-              <strong>{{ member.groupMemberName }}</strong> paying
-              <strong>{{ getExpensePayer(sDetail)?.groupMemberName }}</strong>
-              for <strong>{{ sDetail.expense.title }}</strong>.
+              <strong>{{ member.groupMemberName }}</strong> is settling their share of
+              <strong>{{ sDetail.expense.title }}</strong>.
             </p>
 
-            <!-- Pending summary -->
+            <!-- Pending summary (always positive) -->
             <div class="settle-summary-row">
-              <span class="settle-summary-label">Total pending</span>
-              <span class="settle-summary-pending">PKR {{ (member.pendingAmount ?? member.amountToPay ?? 0) | number:'1.0-0' }}</span>
+              <span class="settle-summary-label">Your pending amount</span>
+              <span class="settle-summary-pending">PKR {{ (member.amountToPay ?? 0) | number:'1.0-0' }}</span>
             </div>
 
-            <!-- Editable amount -->
+            <!-- Receiver selection -->
+            @let payers = getExpensePayers(sDetail);
             <div class="field" style="margin-top: 1rem;">
-              <label class="field-label" for="settleAmount">Settlement Amount</label>
-              <input
-                id="settleAmount"
-                class="input-clean"
-                type="number"
-                min="1"
-                [max]="member.pendingAmount ?? member.amountToPay ?? 0"
-                placeholder="Enter amount"
-                [(ngModel)]="settleAmount"
-                name="settleAmount"
-              />
-              <span class="field-hint">Can be partial — e.g. pay PKR 50 now and the rest later.</span>
+              <label class="field-label">Pay to</label>
+              <div class="settle-receiver-list">
+                @for (payer of payers; track payer.expenseDetailsId) {
+                  <button
+                    type="button"
+                    class="settle-receiver-option"
+                    [class.settle-receiver-selected]="settleReceiver()?.expenseDetailsId === payer.expenseDetailsId"
+                    (click)="selectSettleReceiver(payer)"
+                  >
+                    <div class="settle-receiver-avatar">{{ getMemberInitials(payer.groupMemberName) }}</div>
+                    <div class="settle-receiver-info">
+                      <span class="settle-receiver-name">{{ payer.groupMemberName }}</span>
+                      <span class="settle-receiver-sub">Gets back PKR {{ (payer.amountToGet ?? 0) | number:'1.0-0' }}</span>
+                    </div>
+                    @if (settleReceiver()?.expenseDetailsId === payer.expenseDetailsId) {
+                      <span class="settle-receiver-check">✓</span>
+                    }
+                  </button>
+                }
+              </div>
             </div>
+
+            <!-- Amount — shown only after receiver is picked -->
+            @if (settleReceiver()) {
+              @let maxAmt = getSettleMaxAmount(member, settleReceiver()!);
+              <div class="field" style="margin-top: 0.85rem;">
+                <label class="field-label" for="settleAmount">Settlement Amount</label>
+                <input
+                  id="settleAmount"
+                  class="input-clean"
+                  type="number"
+                  min="1"
+                  [max]="maxAmt"
+                  placeholder="Enter amount"
+                  [(ngModel)]="settleAmount"
+                  name="settleAmount"
+                  (input)="clampSettleAmount()"
+                />
+                <span class="field-hint">Max: PKR {{ maxAmt | number:'1.0-0' }} · Can be a partial payment.</span>
+              </div>
+            }
 
             <!-- Date -->
             <div class="field" style="margin-top: 0.85rem;">

@@ -1,0 +1,165 @@
+/* PWA Install Prompt */
+
+.pwa-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  z-index: 9998;
+  animation: pwaFadeIn 0.2s ease;
+}
+
+.pwa-sheet {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 9999;
+  background: #fff;
+  border-radius: 20px 20px 0 0;
+  padding: 1.5rem 1.5rem 2rem;
+  box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.15);
+  animation: pwaSlideUp 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+@keyframes pwaFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes pwaSlideUp {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+
+.pwa-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: #f2f1ee;
+  border: none;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  font-size: 0.85rem;
+  color: #555;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.pwa-header {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.pwa-app-icon {
+  width: 52px;
+  height: 52px;
+  background: #111;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.pwa-app-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.pwa-app-name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #111;
+}
+
+.pwa-app-desc {
+  font-size: 0.8rem;
+  color: #888;
+}
+
+.pwa-body {
+  font-size: 0.875rem;
+  color: #555;
+  line-height: 1.55;
+  margin: 0 0 1.25rem;
+}
+
+.pwa-actions {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.pwa-btn-install {
+  flex: 1;
+  background: #111;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.pwa-btn-install:hover {
+  background: #333;
+}
+
+.pwa-btn-dismiss {
+  background: none;
+  border: 1px solid #e0dedd;
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  color: #666;
+  cursor: pointer;
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+
+.pwa-btn-dismiss:hover {
+  background: #f5f4f0;
+}
+
+/* iOS steps */
+.pwa-steps {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.pwa-steps li {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.875rem;
+  color: #444;
+  line-height: 1.4;
+}
+
+.pwa-step-icon {
+  width: 34px;
+  height: 34px;
+  background: #f2f1ee;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #333;
+  flex-shrink: 0;
+}

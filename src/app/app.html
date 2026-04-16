@@ -1,3 +1,72 @@
-
-
 <router-outlet />
+
+@if (showPrompt()) {
+  <div class="pwa-backdrop" (click)="dismiss()"></div>
+  <div class="pwa-sheet">
+
+    <button class="pwa-close" (click)="dismiss()" aria-label="Dismiss">&#x2715;</button>
+
+    <div class="pwa-header">
+      <div class="pwa-app-icon">
+        <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2L20.66 7V17L12 22L3.34 17V7L12 2Z"/>
+        </svg>
+      </div>
+      <div class="pwa-app-info">
+        <span class="pwa-app-name">SplitHouse</span>
+        <span class="pwa-app-desc">Add to your home screen</span>
+      </div>
+    </div>
+
+    @if (!isIOS()) {
+      <!-- Android / Chrome — one-tap install -->
+      <p class="pwa-body">
+        Install SplitHouse for quick access — works offline and feels like a native app.
+      </p>
+      <div class="pwa-actions">
+        <button class="pwa-btn-install" (click)="install()">Install App</button>
+        <button class="pwa-btn-dismiss" (click)="dismiss()">Not now</button>
+      </div>
+    } @else {
+      <!-- iOS Safari — manual steps -->
+      <p class="pwa-body">
+        Install SplitHouse on your iPhone for quick access right from your home screen.
+      </p>
+      <ol class="pwa-steps">
+        <li>
+          <span class="pwa-step-icon">
+            <!-- iOS Share icon -->
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+              <polyline points="16 6 12 2 8 6"/>
+              <line x1="12" y1="2" x2="12" y2="15"/>
+            </svg>
+          </span>
+          Tap the <strong>Share</strong> button in Safari's toolbar
+        </li>
+        <li>
+          <span class="pwa-step-icon">
+            <!-- Plus-in-square icon -->
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2"/>
+              <line x1="12" y1="8" x2="12" y2="16"/>
+              <line x1="8" y1="12" x2="16" y2="12"/>
+            </svg>
+          </span>
+          Scroll down and tap <strong>Add to Home Screen</strong>
+        </li>
+        <li>
+          <span class="pwa-step-icon">
+            <!-- Check icon -->
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </span>
+          Tap <strong>Add</strong> to confirm
+        </li>
+      </ol>
+      <button class="pwa-btn-dismiss" (click)="dismiss()">Got it</button>
+    }
+
+  </div>
+}

@@ -10,6 +10,7 @@ export interface SettlementSummary {
   paidTo: string;
   groupName: string;
   settlementAmount: number;
+  expenseTitle?: string;
 }
 
 export interface SettlementSummaryParams {

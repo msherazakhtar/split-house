@@ -28,12 +28,14 @@ import {
   DollarSign,
   SlidersHorizontal,
   TrendingUp,
+  TrendingDown,
   Tag,
   Eye,
   Pencil,
   Trash2,
   Plus,
   ArrowRight,
+  LayoutList,
 } from 'lucide-angular';
 
 @Component({
@@ -101,6 +103,8 @@ export class DashboardComponent implements OnInit {
   // Filters
   settlementDateFrom = signal('2025-06-01');
   settlementDateTo = signal('2026-12-30');
+  settlementGroupFilter = '';
+  settlementView = signal<'list' | 'byPerson'>('list');
 
   // Settle Member Modal
   isSettleModalOpen = signal(false);
@@ -131,6 +135,8 @@ export class DashboardComponent implements OnInit {
   readonly Trash2 = Trash2;
   readonly Plus = Plus;
   readonly ArrowRight = ArrowRight;
+  readonly TrendingDown = TrendingDown;
+  readonly LayoutList = LayoutList;
 
   isMobileNavOpen = signal(false);
 
@@ -143,6 +149,7 @@ export class DashboardComponent implements OnInit {
 
   // Create/Edit Modal State
   isCreateModalOpen = signal(false);
+  addSelfAsMember = signal(true);
   groupToEdit = signal<Group | null>(null);
   newGroupName = signal('');
   isCreating = signal(false);
@@ -277,6 +284,54 @@ export class DashboardComponent implements OnInit {
       .map((s) => s.groupName)
       .filter((g): g is string => !!g);
     return [...new Set(groups)];
+  }
+
+  getFilteredSettlements(): SettlementSummary[] {
+    const group = this.settlementGroupFilter;
+    if (!group) return this.settlements();
+    return this.settlements().filter((s) => s.groupName === group);
+  }
+
+  getSettlementsYouAreOwed(): number {
+    return this.getFilteredSettlements()
+      .filter((s) => s.paidTo === this.username())
+      .reduce((sum, s) => sum + Math.abs(s.settlementAmount ?? 0), 0);
+  }
+
+  getSettlementsYouOwe(): number {
+    return this.getFilteredSettlements()
+      .filter((s) => s.paidBy === this.username())
+      .reduce((sum, s) => sum + Math.abs(s.settlementAmount ?? 0), 0);
+  }
+
+  getPersonPairSummary(): { paidBy: string; paidTo: string; total: number; count: number }[] {
+    const map = new Map<string, { paidBy: string; paidTo: string; total: number; count: number }>();
+    for (const s of this.getFilteredSettlements()) {
+      const key = `${s.paidBy}→${s.paidTo}`;
+      if (!map.has(key)) map.set(key, { paidBy: s.paidBy, paidTo: s.paidTo, total: 0, count: 0 });
+      const entry = map.get(key)!;
+      entry.total += Math.abs(s.settlementAmount ?? 0);
+      entry.count++;
+    }
+    return [...map.values()].sort((a, b) => b.total - a.total);
+  }
+
+  getAvatarInitials(name: string): string {
+    if (!name) return '?';
+    const parts = name.trim().split(/\s+/);
+    if (parts.length === 1) return parts[0].charAt(0).toUpperCase();
+    return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
+  }
+
+  getAvatarColor(name: string): string {
+    const colors = ['#e8d5b7', '#b7d5e8', '#b7e8d5', '#d5b7e8', '#e8b7d5', '#d5e8b7'];
+    let hash = 0;
+    for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
+    return colors[Math.abs(hash) % colors.length];
+  }
+
+  isCurrentUser(name: string): boolean {
+    return name === this.username();
   }
 
   openSettleModal(member: ExpenseMemberDetail, detail: ExpenseDetailResponse) {
@@ -804,11 +859,13 @@ export class DashboardComponent implements OnInit {
     if (group) {
       this.groupToEdit.set(group);
       this.newGroupName.set(group.name || group.title || '');
+      this.addSelfAsMember.set(false);
     } else {
       this.groupToEdit.set(null);
       this.newGroupName.set('');
+      this.addSelfAsMember.set(true);
     }
-    
+
     this.createError.set('');
     this.isCreateModalOpen.set(true);
   }
@@ -846,16 +903,67 @@ export class DashboardComponent implements OnInit {
     this.createError.set('');
 
     this.groupService.createGroup(payload).subscribe({
-      next: () => {
-        this.isCreating.set(false);
-        this.isCreateModalOpen.set(false);
-        this.loadGroups();
+      next: (newGroup) => {
+        const finish = () => {
+          this.isCreating.set(false);
+          this.isCreateModalOpen.set(false);
+          this.loadGroups();
+        };
+
+        if (!isEditing && this.addSelfAsMember()) {
+          const groupIdFromResponse = newGroup?.groupId ?? newGroup?.id;
+
+          if (groupIdFromResponse) {
+            // Group ID came back in the create response — add member directly
+            this.addSelfAsGroupMember(groupIdFromResponse, actorEmail, finish);
+          } else {
+            // Create response didn't include groupId — re-fetch the list to find it
+            this.groupService.getGroupsByUser(userId!).subscribe({
+              next: (groups) => {
+                const created = groups.find(
+                  (g) => (g.name || g.title)?.toLowerCase() === this.newGroupName().trim().toLowerCase(),
+                );
+                const groupId = created?.groupId ?? created?.id;
+                if (groupId) {
+                  this.addSelfAsGroupMember(groupId, actorEmail, finish);
+                } else {
+                  finish();
+                }
+              },
+              error: () => finish(),
+            });
+          }
+        } else {
+          finish();
+        }
       },
       error: (err) => {
         console.error('Error creating group:', err);
         this.isCreating.set(false);
         this.createError.set('Failed to create house. Please try again.');
       }
+    });
+  }
+
+  private addSelfAsGroupMember(groupId: number | string, actorEmail: string, callback: () => void): void {
+    const profile = this.authService.userDetails();
+    const now = new Date().toISOString();
+    const memberPayload: GroupMember = {
+      name: [profile?.firstName, profile?.lastName].filter(Boolean).join(' ') || this.username(),
+      email: profile?.email || actorEmail,
+      phone: profile?.phone?.trim() || undefined,
+      groupId: groupId,
+      createdAt: now,
+      createdBy: actorEmail,
+      modifiedAt: now,
+      modifiedBy: actorEmail,
+    };
+    this.groupService.addGroupMember(memberPayload).subscribe({
+      next: () => callback(),
+      error: (err) => {
+        console.error('Failed to add self as member:', err);
+        callback();
+      },
     });
   }
 

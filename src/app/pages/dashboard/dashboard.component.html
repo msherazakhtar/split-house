@@ -331,6 +331,15 @@
             <label class="filter-label">To</label>
             <input type="date" class="input-clean filter-input" [(ngModel)]="settlementDateTo" name="settlementDateTo" />
           </div>
+          <div class="filter-group">
+            <label class="filter-label">Group</label>
+            <select class="input-clean filter-input filter-select" [(ngModel)]="settlementGroupFilter" name="settlementGroupFilter">
+              <option value="">All Groups</option>
+              @for (g of getSettlementsUniqueGroups(); track g) {
+                <option [value]="g">{{ g }}</option>
+              }
+            </select>
+          </div>
           <button class="btn-primary filter-apply-btn" (click)="applySettlementFilters()" [disabled]="isSettlementsLoading()">
             <lucide-icon [img]="SlidersHorizontal" [size]="15" [strokeWidth]="2"></lucide-icon>
             Apply
@@ -363,7 +372,7 @@
               </div>
               <div class="summary-card-body">
                 <span class="summary-card-label">Total Settlements</span>
-                <span class="summary-card-value">{{ settlements().length }}</span>
+                <span class="summary-card-value">{{ getFilteredSettlements().length }}</span>
               </div>
             </div>
             <div class="summary-card">
@@ -375,45 +384,110 @@
                 <span class="summary-card-value">{{ getSettlementsTotalAmount() | currency:'PKR':'symbol-narrow':'1.0-0' }}</span>
               </div>
             </div>
-            <div class="summary-card">
-              <div class="summary-card-icon">
-                <lucide-icon [img]="Users" [size]="20" [strokeWidth]="1.8"></lucide-icon>
+            <div class="summary-card summary-card-positive">
+              <div class="summary-card-icon summary-card-icon-green">
+                <lucide-icon [img]="TrendingUp" [size]="20" [strokeWidth]="1.8"></lucide-icon>
               </div>
               <div class="summary-card-body">
-                <span class="summary-card-label">Groups</span>
-                <span class="summary-card-value">{{ getSettlementsUniqueGroups().length || '—' }}</span>
+                <span class="summary-card-label">You Are Owed</span>
+                <span class="summary-card-value">{{ getSettlementsYouAreOwed() | currency:'PKR':'symbol-narrow':'1.0-0' }}</span>
+              </div>
+            </div>
+            <div class="summary-card summary-card-negative">
+              <div class="summary-card-icon summary-card-icon-red">
+                <lucide-icon [img]="TrendingDown" [size]="20" [strokeWidth]="1.8"></lucide-icon>
+              </div>
+              <div class="summary-card-body">
+                <span class="summary-card-label">You Paid Out</span>
+                <span class="summary-card-value">{{ getSettlementsYouOwe() | currency:'PKR':'symbol-narrow':'1.0-0' }}</span>
               </div>
             </div>
           </div>
 
-          <!-- Settlement List -->
-          <div class="settlement-list">
-            <div class="settlement-list-header">
-              <span class="col-date">Date</span>
-              <span class="col-paid-by">Paid By</span>
-              <span class="col-paid-to">Paid To</span>
-              <span class="col-group">Group</span>
-              <span class="col-amount">Amount</span>
-            </div>
-
-            @for (settlement of settlements(); track settlement.expenseSettlementId) {
-              <div class="settlement-row">
-                <span class="col-date settlement-date">{{ getSettlementDate(settlement) }}</span>
-                <div class="col-paid-by settlement-member">
-                  <div class="settlement-dot settlement-dot-from"></div>
-                  <span>{{ settlement.paidBy }}</span>
-                </div>
-                <div class="col-paid-to settlement-member">
-                  <lucide-icon class="settlement-arrow" [img]="ArrowRight" [size]="13" [strokeWidth]="2"></lucide-icon>
-                  <span>{{ settlement.paidTo }}</span>
-                </div>
-                <span class="col-group settlement-group">{{ settlement.groupName || '—' }}</span>
-                <span class="col-amount settlement-amount">
-                  {{ (settlement.settlementAmount | currency:'PKR':'symbol-narrow':'1.0-0') }}
-                </span>
-              </div>
-            }
+          <!-- View Toggle -->
+          <div class="settlement-view-toggle">
+            <button class="toggle-btn" [class.active]="settlementView() === 'list'" (click)="settlementView.set('list')">
+              <lucide-icon [img]="LayoutList" [size]="14" [strokeWidth]="2"></lucide-icon>
+              All Transactions
+            </button>
+            <button class="toggle-btn" [class.active]="settlementView() === 'byPerson'" (click)="settlementView.set('byPerson')">
+              <lucide-icon [img]="Users" [size]="14" [strokeWidth]="2"></lucide-icon>
+              By Person
+            </button>
           </div>
+
+          @if (settlementView() === 'list') {
+            <!-- Settlement List -->
+            <div class="settlement-list">
+              <div class="settlement-list-header">
+                <span class="col-date">Date</span>
+                <span class="col-paid-by">Paid By</span>
+                <span class="col-paid-to">Paid To</span>
+                <span class="col-group">Group / Expense</span>
+                <span class="col-amount">Amount</span>
+              </div>
+
+              @for (settlement of getFilteredSettlements(); track settlement.expenseSettlementId) {
+                <div class="settlement-row" [class.settlement-row-you]="isCurrentUser(settlement.paidBy) || isCurrentUser(settlement.paidTo)">
+                  <span class="col-date settlement-date">{{ getSettlementDate(settlement) }}</span>
+                  <div class="col-paid-by settlement-member">
+                    <div class="settlement-avatar" [style.background]="getAvatarColor(settlement.paidBy)">
+                      {{ getAvatarInitials(settlement.paidBy) }}
+                    </div>
+                    <span [class.settlement-you-label]="isCurrentUser(settlement.paidBy)">{{ settlement.paidBy }}</span>
+                  </div>
+                  <div class="col-paid-to settlement-member">
+                    <lucide-icon class="settlement-arrow" [img]="ArrowRight" [size]="13" [strokeWidth]="2"></lucide-icon>
+                    <div class="settlement-avatar" [style.background]="getAvatarColor(settlement.paidTo)">
+                      {{ getAvatarInitials(settlement.paidTo) }}
+                    </div>
+                    <span [class.settlement-you-label]="isCurrentUser(settlement.paidTo)">{{ settlement.paidTo }}</span>
+                  </div>
+                  <div class="col-group settlement-group">
+                    <span class="settlement-group-badge">{{ settlement.groupName || '—' }}</span>
+                    @if (settlement.expenseTitle) {
+                      <span class="settlement-expense-title">{{ settlement.expenseTitle }}</span>
+                    }
+                  </div>
+                  <span class="col-amount settlement-amount">
+                    {{ settlement.settlementAmount | currency:'PKR':'symbol-narrow':'1.0-0' }}
+                  </span>
+                </div>
+              }
+            </div>
+          } @else {
+            <!-- By Person View -->
+            <div class="settlement-list">
+              <div class="settlement-list-header settlement-pair-header">
+                <span class="col-pair-from">Paid By</span>
+                <span class="col-pair-to">Paid To</span>
+                <span class="col-pair-count">Transactions</span>
+                <span class="col-amount">Total Amount</span>
+              </div>
+
+              @for (pair of getPersonPairSummary(); track (pair.paidBy + pair.paidTo)) {
+                <div class="settlement-row settlement-pair-row" [class.settlement-row-you]="isCurrentUser(pair.paidBy) || isCurrentUser(pair.paidTo)">
+                  <div class="col-pair-from settlement-member">
+                    <div class="settlement-avatar" [style.background]="getAvatarColor(pair.paidBy)">
+                      {{ getAvatarInitials(pair.paidBy) }}
+                    </div>
+                    <span [class.settlement-you-label]="isCurrentUser(pair.paidBy)">{{ pair.paidBy }}</span>
+                  </div>
+                  <div class="col-pair-to settlement-member">
+                    <lucide-icon class="settlement-arrow" [img]="ArrowRight" [size]="13" [strokeWidth]="2"></lucide-icon>
+                    <div class="settlement-avatar" [style.background]="getAvatarColor(pair.paidTo)">
+                      {{ getAvatarInitials(pair.paidTo) }}
+                    </div>
+                    <span [class.settlement-you-label]="isCurrentUser(pair.paidTo)">{{ pair.paidTo }}</span>
+                  </div>
+                  <span class="col-pair-count settlement-tx-count">{{ pair.count }} payment{{ pair.count !== 1 ? 's' : '' }}</span>
+                  <span class="col-amount settlement-amount">
+                    {{ pair.total | currency:'PKR':'symbol-narrow':'1.0-0' }}
+                  </span>
+                </div>
+              }
+            </div>
+          }
         }
       </div>
 
@@ -461,6 +535,13 @@
                 autofocus
               />
             </div>
+
+            @if (!groupToEdit()) {
+              <label class="field-checkbox">
+                <input type="checkbox" [checked]="addSelfAsMember()" (change)="addSelfAsMember.set($any($event.target).checked)" />
+                <span>Add me as a member of this house</span>
+              </label>
+            }
 
             @if (createError()) {
               <div class="modal-error">

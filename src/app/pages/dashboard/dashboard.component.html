@@ -169,11 +169,11 @@
                   <div class="group-stats">
                     <div class="stat">
                       <span class="stat-lbl">Active Members</span>
-                      <span class="stat-val">--</span>
+                      <span class="stat-val">{{ group.totalMembers ?? '--' }}</span>
                     </div>
                     <div class="stat">
                       <span class="stat-lbl">Total Expenses</span>
-                      <span class="stat-val">--</span>
+                      <span class="stat-val">{{ group.totalExpense != null ? ('Rs-/' + group.totalExpense.toFixed(2)) : '--' }}</span>
                     </div>
                   </div>
                 </div>

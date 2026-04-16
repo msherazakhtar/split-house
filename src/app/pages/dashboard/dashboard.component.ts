@@ -190,6 +190,9 @@ export class DashboardComponent implements OnInit {
   setActiveTab(tab: string) {
     this.activeTab.set(tab);
     this.isMobileNavOpen.set(false);
+    if (tab === 'groups') {
+      this.loadGroups();
+    }
     if (tab === 'expenses' && this.expenses().length === 0 && !this.isExpensesLoading()) {
       this.loadExpenseSummary();
     }
@@ -843,7 +846,7 @@ export class DashboardComponent implements OnInit {
     this.createError.set('');
 
     this.groupService.createGroup(payload).subscribe({
-      next: (newGroup) => {
+      next: () => {
         this.isCreating.set(false);
         this.isCreateModalOpen.set(false);
         this.loadGroups();

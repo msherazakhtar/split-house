@@ -9,7 +9,14 @@ export interface Group {
   description?: string;
   // Fallbacks if the API uses different naming conventions
   title?: string;
-  groupId?: string;
+  groupId?: number | string;
+  userId?: number;
+  modifiedBy?: string;
+  createdBy?: string;
+  dateCreated?: string;
+  dateModified?: string;
+  totalExpense?: number;
+  totalMembers?: number;
   [key: string]: any;
 }
 

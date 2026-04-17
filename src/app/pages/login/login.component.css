@@ -22,10 +22,15 @@
   animation: fadeUp 0.55s ease-out both;
 }
 
+.brand-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: auto;
+  padding-bottom: 2rem;
+}
+
 .back-link {
-  position: absolute;
-  top: 2rem;
-  left: 3rem;
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
@@ -34,7 +39,6 @@
   font-size: 0.82rem;
   font-weight: 500;
   transition: color 0.15s;
-  width: fit-content;
 }
 
 .back-link:hover {
@@ -432,12 +436,7 @@
   .login-brand {
     border-right: none;
     border-bottom: 1px solid #e0e0de;
-    padding: 4rem 2rem 2.5rem;
-  }
-
-  .back-link {
-    top: 1.5rem;
-    left: 2rem;
+    padding: 2rem 2rem 2.5rem;
   }
 
   .brand-content {
@@ -460,12 +459,7 @@
 
 @media (max-width: 480px) {
   .login-brand {
-    padding: 3.75rem 1.25rem 2rem;
-  }
-
-  .back-link {
-    top: 1.25rem;
-    left: 1.25rem;
+    padding: 1.5rem 1.25rem 2rem;
   }
 
   .login-form-panel {

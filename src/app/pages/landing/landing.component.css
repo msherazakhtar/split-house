@@ -112,10 +112,6 @@
   margin-left: auto;
 }
 
-.nav-mobile-cta {
-  display: none;
-  margin-left: auto;
-}
 
 /* ===================================================
    BUTTONS
@@ -829,8 +825,7 @@
 
 @media (max-width: 768px) {
   .nav-links { display: none; }
-  .nav-cta   { display: none; }
-  .nav-mobile-cta { display: flex; }
+  .nav-cta { display: none; }
 
   .section { padding: 4rem 0; }
   .hero    { padding: 7rem 0 4rem; }

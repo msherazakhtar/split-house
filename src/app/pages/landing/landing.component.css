@@ -108,8 +108,11 @@
   color: var(--text);
 }
 
-.nav-cta {
+.nav-actions {
   margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 
@@ -632,6 +635,24 @@
   color: rgba(255, 255, 255, 0.6);
   line-height: 1.8;
   margin-bottom: 2.5rem;
+}
+
+.cta-existing-user {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 2rem;
+}
+
+.cta-login-link {
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  font-weight: 600;
+  transition: color 0.15s;
+}
+
+.cta-login-link:hover {
+  color: #ffffff;
 }
 
 .waitlist-form {

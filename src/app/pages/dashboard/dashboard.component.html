@@ -22,6 +22,9 @@
       <a class="nav-item" [class.active]="activeTab() === 'settlements'" (click)="setActiveTab('settlements')">
         <span class="nav-icon"><lucide-icon [img]="Handshake" [size]="18" [strokeWidth]="2"></lucide-icon></span> Settlements
       </a>
+      <a class="nav-item" [class.active]="activeTab() === 'reports'" (click)="setActiveTab('reports')">
+        <span class="nav-icon"><lucide-icon [img]="BarChart2" [size]="18" [strokeWidth]="2"></lucide-icon></span> Reports
+      </a>
       <a class="nav-item" [class.active]="activeTab() === 'settings'" (click)="setActiveTab('settings')">
         <span class="nav-icon"><lucide-icon [img]="Settings" [size]="18" [strokeWidth]="2"></lucide-icon></span> Settings
       </a>
@@ -63,6 +66,9 @@
       </a>
       <a class="nav-item" [class.active]="activeTab() === 'settlements'" (click)="setActiveTab('settlements')">
         <span class="nav-icon"><lucide-icon [img]="Handshake" [size]="18" [strokeWidth]="2"></lucide-icon></span> Settlements
+      </a>
+      <a class="nav-item" [class.active]="activeTab() === 'reports'" (click)="setActiveTab('reports')">
+        <span class="nav-icon"><lucide-icon [img]="BarChart2" [size]="18" [strokeWidth]="2"></lucide-icon></span> Reports
       </a>
       <a class="nav-item" [class.active]="activeTab() === 'settings'" (click)="setActiveTab('settings')">
         <span class="nav-icon"><lucide-icon [img]="Settings" [size]="18" [strokeWidth]="2"></lucide-icon></span> Settings
@@ -488,6 +494,136 @@
               }
             </div>
           }
+        }
+      </div>
+
+    } @else if (activeTab() === 'reports') {
+      <!-- Reports View -->
+      <div class="view-content">
+        <div class="main-header">
+          <div class="header-titles">
+            <h1 class="page-title">Reports</h1>
+            <p class="page-subtitle">Generate expense reports for your groups.</p>
+          </div>
+        </div>
+
+        <!-- Sub-tab bar -->
+        <div class="report-subtabs">
+          <button class="report-subtab" [class.active]="reportSubTab() === 'monthly'" (click)="reportSubTab.set('monthly')">
+            <lucide-icon [img]="BarChart2" [size]="14" [strokeWidth]="2"></lucide-icon>
+            Monthly Report
+          </button>
+        </div>
+
+        @if (reportSubTab() === 'monthly') {
+          <div class="report-section">
+            <!-- Filters -->
+            <div class="expense-filters">
+              <div class="filter-group">
+                <label class="filter-label">Group</label>
+                <select class="input-clean filter-input filter-select" [(ngModel)]="reportGroupId" name="reportGroupId">
+                  <option value="-1">All Groups</option>
+                  @for (g of groups(); track g.id ?? g.groupId) {
+                    <option [value]="(g.id ?? g.groupId)?.toString()">{{ g.name || g.title }}</option>
+                  }
+                </select>
+              </div>
+              <div class="filter-group">
+                <label class="filter-label">From</label>
+                <input type="date" class="input-clean filter-input" [(ngModel)]="reportDateFrom" name="reportDateFrom" />
+              </div>
+              <div class="filter-group">
+                <label class="filter-label">To</label>
+                <input type="date" class="input-clean filter-input" [(ngModel)]="reportDateTo" name="reportDateTo" />
+              </div>
+              <button class="btn-primary filter-apply-btn" (click)="loadMonthlyReport()" [disabled]="isReportLoading()">
+                <lucide-icon [img]="BarChart2" [size]="15" [strokeWidth]="2"></lucide-icon>
+                Run Report
+              </button>
+            </div>
+
+            @if (isReportLoading()) {
+              <div class="dash-loader">
+                <div class="spinner"></div>
+                <p>Generating report...</p>
+              </div>
+            } @else if (reportError()) {
+              <div class="dash-error">
+                <div class="error-icon"><lucide-icon [img]="TriangleAlert" [size]="36" [strokeWidth]="1.5"></lucide-icon></div>
+                <p>{{ reportError() }}</p>
+                <button class="btn-outline" (click)="loadMonthlyReport()">Try Again</button>
+              </div>
+            } @else if (monthlyReportResults().length === 0) {
+              <div class="dash-empty">
+                <div class="empty-icon"><lucide-icon [img]="BarChart2" [size]="52" [strokeWidth]="1.2"></lucide-icon></div>
+                <h3>No data yet</h3>
+                <p>Select a date range and click <strong>Run Report</strong> to generate your monthly expense report.</p>
+              </div>
+            } @else {
+              <!-- Summary Cards -->
+              <div class="expense-summary-cards">
+                <div class="summary-card">
+                  <div class="summary-card-icon">
+                    <lucide-icon [img]="BarChart2" [size]="20" [strokeWidth]="1.8"></lucide-icon>
+                  </div>
+                  <div class="summary-card-body">
+                    <span class="summary-card-label">Groups in Report</span>
+                    <span class="summary-card-value">{{ monthlyReportResults().length }}</span>
+                  </div>
+                </div>
+                <div class="summary-card">
+                  <div class="summary-card-icon">
+                    <lucide-icon [img]="DollarSign" [size]="20" [strokeWidth]="1.8"></lucide-icon>
+                  </div>
+                  <div class="summary-card-body">
+                    <span class="summary-card-label">Total Expense</span>
+                    <span class="summary-card-value">
+                      {{ monthlyReportResults().reduce((s, r) => s + (r.total_expense ?? 0), 0) | currency:'PKR':'symbol-narrow':'1.0-0' }}
+                    </span>
+                  </div>
+                </div>
+                <div class="summary-card">
+                  <div class="summary-card-icon">
+                    <lucide-icon [img]="Users" [size]="20" [strokeWidth]="1.8"></lucide-icon>
+                  </div>
+                  <div class="summary-card-body">
+                    <span class="summary-card-label">Total Members</span>
+                    <span class="summary-card-value">
+                      {{ monthlyReportResults().reduce((s, r) => s + (r.total_members ?? 0), 0) }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Report Table -->
+              <div class="report-table-wrap">
+                <div class="settlement-list-header report-table-header">
+                  <span class="report-col-group">Group</span>
+                  <span class="report-col-members">Members</span>
+                  <span class="report-col-amount">Total Expense</span>
+                  <span class="report-col-avg">Avg per Member</span>
+                </div>
+                @for (row of monthlyReportResults(); track row.group_id) {
+                  <div class="settlement-row report-row">
+                    <div class="report-col-group report-group-cell">
+                      <div class="report-group-avatar">{{ (row.group_name || 'G').charAt(0).toUpperCase() }}</div>
+                      <div>
+                        <span class="report-group-name">{{ row.group_name }}</span>
+                        <span class="report-group-id">ID: {{ row.group_id }}</span>
+                      </div>
+                    </div>
+                    <span class="report-col-members report-members-badge">{{ row.total_members }}</span>
+                    <span class="report-col-amount settlement-amount">
+                      {{ row.total_expense | currency:'PKR':'symbol-narrow':'1.0-0' }}
+                    </span>
+                    <span class="report-col-avg report-avg">
+                      {{ (row.total_members > 0 ? row.total_expense / row.total_members : 0) | currency:'PKR':'symbol-narrow':'1.0-0' }}
+                    </span>
+                  </div>
+                }
+              </div>
+            }
+          </div>
         }
       </div>
 

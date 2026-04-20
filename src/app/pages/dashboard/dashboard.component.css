@@ -791,6 +791,137 @@
 }
 
 /* ===================================================
+   REPORTS
+   =================================================== */
+.report-subtabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid #e8e8e6;
+  padding-bottom: 0;
+}
+
+.report-subtab {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.55rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #888;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+  margin-bottom: -1px;
+}
+
+.report-subtab:hover {
+  color: #111;
+}
+
+.report-subtab.active {
+  color: #111;
+  border-bottom-color: #111;
+}
+
+.report-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.report-table-wrap {
+  border: 1px solid #e8e8e6;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.report-table-header {
+  display: grid;
+  grid-template-columns: 2fr 100px 180px 180px;
+  padding: 0.65rem 1.25rem;
+  background: #faf9f7;
+  border-bottom: 1px solid #e8e8e6;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #aaa;
+}
+
+.report-row {
+  display: grid;
+  grid-template-columns: 2fr 100px 180px 180px;
+  align-items: center;
+  padding: 0.9rem 1.25rem;
+  border-bottom: 1px solid #f0efed;
+  transition: background 0.12s;
+}
+
+.report-row:last-child {
+  border-bottom: none;
+}
+
+.report-row:hover {
+  background: #faf9f7;
+}
+
+.report-col-group { min-width: 0; }
+.report-col-members { text-align: center; }
+.report-col-amount { text-align: right; }
+.report-col-avg { text-align: right; font-size: 0.875rem; color: #666; }
+
+.report-group-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.report-group-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: #f0efed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: #555;
+  flex-shrink: 0;
+}
+
+.report-group-name {
+  display: block;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #111;
+}
+
+.report-group-id {
+  display: block;
+  font-size: 0.75rem;
+  color: #aaa;
+}
+
+.report-members-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #333;
+}
+
+.report-avg {
+  font-size: 0.875rem;
+  color: #666;
+}
+
+/* ===================================================
    GROUP MEMBERS PANEL
    =================================================== */
 .panel-backdrop {

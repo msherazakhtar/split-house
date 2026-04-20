@@ -14,7 +14,10 @@
         <li><a href="#how-it-works">How It Works</a></li>
         <li><a href="#features">Features</a></li>
       </ul>
-      <a href="#waitlist" class="btn btn-dark nav-cta">Start for free</a>
+      <div class="nav-actions">
+        <a routerLink="/protectedLoginBeta" class="btn btn-outline-dark">Log in</a>
+        <a href="#waitlist" class="btn btn-dark">Start for free</a>
+      </div>
     </div>
   </nav>
 
@@ -188,6 +191,9 @@
         <p class="cta-sub anim" style="--d:80ms">
           Free to use, takes two minutes to set up, and your flatmates will actually
           thank you for introducing it. (Probably.)
+        </p>
+        <p class="cta-existing-user anim" style="--d:120ms">
+          Already have an account? <a routerLink="/protectedLoginBeta" class="cta-login-link">Log in here</a>
         </p>
         <form class="waitlist-form" (submit)="submitWaitlist($event)">
           @if (waitlistState() !== 'success') {

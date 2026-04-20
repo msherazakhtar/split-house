@@ -11,6 +11,7 @@ import {
   CreateExpenseRequest,
 } from '../../services/expense.service';
 import { SettlementService, SettlementSummary, CreateSettlementPayload } from '../../services/settlement.service';
+import { ReportService, MonthlyReportResult } from '../../services/report.service';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import {
@@ -36,6 +37,7 @@ import {
   Plus,
   ArrowRight,
   LayoutList,
+  BarChart2,
 } from 'lucide-angular';
 
 @Component({
@@ -137,6 +139,16 @@ export class DashboardComponent implements OnInit {
   readonly ArrowRight = ArrowRight;
   readonly TrendingDown = TrendingDown;
   readonly LayoutList = LayoutList;
+  readonly BarChart2 = BarChart2;
+
+  // ---- Reports ----
+  reportSubTab = signal<'monthly'>('monthly');
+  monthlyReportResults = signal<MonthlyReportResult[]>([]);
+  isReportLoading = signal(false);
+  reportError = signal('');
+  reportGroupId = signal('-1');
+  reportDateFrom = signal(new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0]);
+  reportDateTo = signal(new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).toISOString().split('T')[0]);
 
   isMobileNavOpen = signal(false);
 
@@ -186,6 +198,7 @@ export class DashboardComponent implements OnInit {
     private groupService: GroupService,
     private expenseService: ExpenseService,
     private settlementService: SettlementService,
+    private reportService: ReportService,
     private authService: AuthService,
     private router: Router
   ) {}
@@ -206,6 +219,29 @@ export class DashboardComponent implements OnInit {
     if (tab === 'settlements' && this.settlements().length === 0 && !this.isSettlementsLoading()) {
       this.loadSettlementSummary();
     }
+  }
+
+  loadMonthlyReport() {
+    this.isReportLoading.set(true);
+    this.reportError.set('');
+    this.monthlyReportResults.set([]);
+
+    const gid = this.reportGroupId();
+    this.reportService.getMonthlyReport({
+      groupId: gid === '-1' ? '-1' : gid,
+      dateFrom: this.reportDateFrom() || undefined,
+      dateTo: this.reportDateTo() || undefined,
+    }).subscribe({
+      next: (data) => {
+        this.monthlyReportResults.set(Array.isArray(data) ? data : []);
+        this.isReportLoading.set(false);
+      },
+      error: (err) => {
+        console.error('Failed to load monthly report:', err);
+        this.reportError.set('Failed to load report. Please try again.');
+        this.isReportLoading.set(false);
+      },
+    });
   }
 
   loadExpenseSummary() {

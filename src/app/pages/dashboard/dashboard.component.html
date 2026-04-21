@@ -578,7 +578,7 @@
                   <div class="summary-card-body">
                     <span class="summary-card-label">Total Expense</span>
                     <span class="summary-card-value">
-                      {{ monthlyReportResults().reduce((s, r) => s + (r.total_expense ?? 0), 0) | currency:'PKR':'symbol-narrow':'1.0-0' }}
+                      {{ monthlyReportResults().reduce((s, r) => s + r.total_expense, 0) | currency:'PKR':'symbol-narrow':'1.0-0' }}
                     </span>
                   </div>
                 </div>
@@ -589,7 +589,7 @@
                   <div class="summary-card-body">
                     <span class="summary-card-label">Total Members</span>
                     <span class="summary-card-value">
-                      {{ monthlyReportResults().reduce((s, r) => s + (r.total_members ?? 0), 0) }}
+                      {{ monthlyReportResults().reduce((s, r) => s + r.total_members, 0) }}
                     </span>
                   </div>
                 </div>
@@ -1258,7 +1258,7 @@
                         class="ae-paid-input"
                         min="0"
                         placeholder="0"
-                        [value]="memberPaidAmounts()[memberId] ?? '0'"
+                        [value]="memberPaidAmounts()[memberId] || '0'"
                         (input)="setMemberPaidAmount(memberId, $any($event.target).value)"
                         [disabled]="!isSelected"
                       />

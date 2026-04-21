@@ -597,28 +597,35 @@
 
               <!-- Report Table -->
               <div class="report-table-wrap">
-                <div class="settlement-list-header report-table-header">
+                <div class="report-table-header">
                   <span class="report-col-group">Group</span>
                   <span class="report-col-members">Members</span>
                   <span class="report-col-amount">Total Expense</span>
                   <span class="report-col-avg">Avg per Member</span>
+                  <span class="report-col-action"></span>
                 </div>
                 @for (row of monthlyReportResults(); track row.group_id) {
-                  <div class="settlement-row report-row">
+                  <div class="report-row">
                     <div class="report-col-group report-group-cell">
                       <div class="report-group-avatar">{{ (row.group_name || 'G').charAt(0).toUpperCase() }}</div>
                       <div>
                         <span class="report-group-name">{{ row.group_name }}</span>
-                        <span class="report-group-id">ID: {{ row.group_id }}</span>
+                        <span class="report-group-id">{{ row.total_members }} members</span>
                       </div>
                     </div>
                     <span class="report-col-members report-members-badge">{{ row.total_members }}</span>
                     <span class="report-col-amount settlement-amount">
                       {{ row.total_expense | currency:'PKR':'symbol-narrow':'1.0-0' }}
                     </span>
-                    <span class="report-col-avg report-avg">
+                    <span class="report-col-avg">
                       {{ (row.total_members > 0 ? row.total_expense / row.total_members : 0) | currency:'PKR':'symbol-narrow':'1.0-0' }}
                     </span>
+                    <div class="report-col-action">
+                      <button class="btn-view-report" (click)="openReportDetail(row)">
+                        <lucide-icon [img]="Eye" [size]="13" [strokeWidth]="2"></lucide-icon>
+                        View
+                      </button>
+                    </div>
                   </div>
                 }
               </div>
@@ -637,6 +644,157 @@
     }
 
   </main>
+
+  <!-- Report Detail Panel -->
+  <div class="panel-backdrop" [class.open]="isReportDetailOpen()" (click)="closeReportDetail()"></div>
+  <aside class="report-detail-panel" [class.open]="isReportDetailOpen()">
+
+    <!-- Panel Header -->
+    <div class="rdp-header">
+      <div class="rdp-header-identity">
+        @if (reportDetailRow()) {
+          <div class="rdp-avatar">{{ (reportDetailRow()!.group_name || 'G').charAt(0).toUpperCase() }}</div>
+          <div>
+            <h2 class="rdp-title">{{ reportDetailRow()!.group_name }}</h2>
+            <span class="rdp-subtitle">{{ reportDateFrom() | date:'MMM d' }} – {{ reportDateTo() | date:'MMM d, yyyy' }}</span>
+          </div>
+        }
+      </div>
+      <button class="btn-panel-close" (click)="closeReportDetail()" title="Close">
+        <lucide-icon [img]="X" [size]="18" [strokeWidth]="2.5"></lucide-icon>
+      </button>
+    </div>
+
+    <!-- Loading -->
+    @if (isReportDetailLoading()) {
+      <div class="rdp-state">
+        <div class="spinner"></div>
+        <p>Loading details…</p>
+      </div>
+    }
+
+    <!-- Error -->
+    @else if (reportDetailError()) {
+      <div class="rdp-state rdp-state-error">
+        <lucide-icon [img]="TriangleAlert" [size]="32" [strokeWidth]="1.5"></lucide-icon>
+        <p>{{ reportDetailError() }}</p>
+        <button class="btn-outline" (click)="reportDetailRow() && openReportDetail(reportDetailRow()!)">Retry</button>
+      </div>
+    }
+
+    <!-- Content -->
+    @else if (reportDetailData()) {
+      @let detail = reportDetailData()!;
+      @let splits = detail.lstExpenseSplitDetails;
+      @let grouped = reportDetailGrouped();
+
+      <div class="rdp-body">
+
+        <!-- ── Member Balances ── -->
+        <div class="rdp-section">
+          <p class="rdp-section-label">Member Balances</p>
+          <div class="rdp-balances-grid">
+            @for (m of splits; track m.email) {
+              <div class="rdp-balance-card" [class.rdp-balance-positive]="m.net_balance > 0" [class.rdp-balance-negative]="m.net_balance < 0" [class.rdp-balance-neutral]="m.net_balance === 0">
+
+                <!-- Identity + Status -->
+                <div class="rdp-balance-top">
+                  <div class="rdp-balance-avatar" [class.rdp-av-positive]="m.net_balance > 0" [class.rdp-av-negative]="m.net_balance < 0">
+                    {{ m.member_name.charAt(0).toUpperCase() }}
+                  </div>
+                  <div class="rdp-balance-info">
+                    <span class="rdp-balance-name">{{ m.member_name }}</span>
+                    <span class="rdp-balance-email">{{ m.email }}</span>
+                  </div>
+                  <span class="rdp-status-badge" [class.rdp-badge-gets]="m.net_balance > 0" [class.rdp-badge-owes]="m.net_balance < 0" [class.rdp-badge-clear]="m.net_balance === 0">
+                    @if (m.net_balance > 0) { Gets Back }
+                    @else if (m.net_balance < 0) { Owes }
+                    @else { Settled }
+                  </span>
+                </div>
+
+                <!-- Big net figure -->
+                <div class="rdp-net-row">
+                  <span class="rdp-net-label">Net Balance</span>
+                  <span class="rdp-net-amount" [class.rdp-amount-positive]="m.net_balance > 0" [class.rdp-amount-negative]="m.net_balance < 0">
+                    {{ m.net_balance > 0 ? '+' : '' }}{{ m.net_balance | currency:'PKR':'symbol-narrow':'1.0-2' }}
+                  </span>
+                </div>
+
+                <!-- Three-column breakdown -->
+                <div class="rdp-breakdown-row">
+                  <div class="rdp-breakdown-cell">
+                    <span class="rdp-bd-label">To Receive</span>
+                    <span class="rdp-bd-value rdp-bd-green">
+                      {{ m.total_to_receive > 0 ? (m.total_to_receive | currency:'PKR':'symbol-narrow':'1.0-0') : '—' }}
+                    </span>
+                    <span class="rdp-bd-hint">Others owe them</span>
+                  </div>
+                  <div class="rdp-breakdown-divider"></div>
+                  <div class="rdp-breakdown-cell">
+                    <span class="rdp-bd-label">To Pay</span>
+                    <span class="rdp-bd-value rdp-bd-red">
+                      {{ m.total_to_pay > 0 ? (m.total_to_pay | currency:'PKR':'symbol-narrow':'1.0-0') : '—' }}
+                    </span>
+                    <span class="rdp-bd-hint">They owe others</span>
+                  </div>
+                  <div class="rdp-breakdown-divider"></div>
+                  <div class="rdp-breakdown-cell">
+                    <span class="rdp-bd-label">Pending</span>
+                    <span class="rdp-bd-value" [class.rdp-bd-green]="m.total_pending > 0" [class.rdp-bd-red]="m.total_pending < 0" [class.rdp-bd-gray]="m.total_pending === 0">
+                      {{ m.total_pending | currency:'PKR':'symbol-narrow':'1.0-0' }}
+                    </span>
+                    <span class="rdp-bd-hint">{{ m.total_pending > 0 ? 'Still to collect' : m.total_pending < 0 ? 'Still to pay' : 'All clear' }}</span>
+                  </div>
+                </div>
+
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- ── Expense Breakdown ── -->
+        <div class="rdp-section">
+          <p class="rdp-section-label">Expense Breakdown <span class="rdp-count-badge">{{ grouped.length }}</span></p>
+          <div class="rdp-expenses-list">
+            @for (exp of grouped; track exp.expense_id) {
+              @let allSettled = exp.members.every(m => m.is_settled);
+              @let settledCount = exp.members.filter(m => m.is_settled).length;
+              <div class="rdp-expense-card">
+                <div class="rdp-expense-top">
+                  <div class="rdp-expense-left">
+                    <span class="rdp-expense-cat">{{ exp.category }}</span>
+                    <h4 class="rdp-expense-title">{{ exp.title }}</h4>
+                    <span class="rdp-expense-date">{{ formatReportDate(exp.expense_date) }}</span>
+                  </div>
+                  <div class="rdp-expense-right">
+                    <span class="rdp-expense-total">{{ exp.total_amount | currency:'PKR':'symbol-narrow':'1.0-0' }}</span>
+                    <span class="rdp-expense-per-head">{{ exp.amount_per_head | currency:'PKR':'symbol-narrow':'1.0-0' }} / person</span>
+                    <span class="rdp-settled-pill" [class.rdp-pill-done]="allSettled" [class.rdp-pill-partial]="!allSettled">
+                      @if (allSettled) { All settled } @else { {{ settledCount }}/{{ exp.members.length }} settled }
+                    </span>
+                  </div>
+                </div>
+                <div class="rdp-members-row">
+                  @for (m of exp.members; track m.name) {
+                    <div class="rdp-member-chip" [class.rdp-chip-settled]="m.is_settled" [class.rdp-chip-pending]="!m.is_settled">
+                      <span class="rdp-member-init">{{ m.name.charAt(0).toUpperCase() }}</span>
+                      <span class="rdp-member-name">{{ m.name }}</span>
+                      @if (m.is_settled) {
+                        <lucide-icon [img]="Check" [size]="11" [strokeWidth]="2.5"></lucide-icon>
+                      }
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+
+      </div>
+    }
+
+  </aside>
 
   <!-- Create Modal Overlay -->
   @if (isCreateModalOpen()) {

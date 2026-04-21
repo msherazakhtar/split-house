@@ -121,4 +121,8 @@ export class ExpenseService {
     };
     return this.http.post<Expense[]>(`${this.baseUrl}/summary`, body);
   }
+
+  syncExpenses(): Observable<void> {
+    return this.http.get<void>(`${environment.apiUrl}/expense/sync`, {});
+  }
 }

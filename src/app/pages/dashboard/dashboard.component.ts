@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { GroupService, Group, GroupMember } from '../../services/group.service';
@@ -11,7 +11,12 @@ import {
   CreateExpenseRequest,
 } from '../../services/expense.service';
 import { SettlementService, SettlementSummary, CreateSettlementPayload } from '../../services/settlement.service';
-import { ReportService, MonthlyReportResult } from '../../services/report.service';
+import {
+  ReportService,
+  MonthlyReportResult,
+  MonthlyReportDetailsResponse,
+  GroupedExpense,
+} from '../../services/report.service';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import {
@@ -38,6 +43,7 @@ import {
   ArrowRight,
   LayoutList,
   BarChart2,
+  Check,
 } from 'lucide-angular';
 
 @Component({
@@ -46,7 +52,8 @@ import {
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css',
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
+  private syncInterval: ReturnType<typeof setInterval> | null = null;
   // ---- Expenses ----
   expenses = signal<Expense[]>([]);
   isExpensesLoading = signal(false);
@@ -140,6 +147,7 @@ export class DashboardComponent implements OnInit {
   readonly TrendingDown = TrendingDown;
   readonly LayoutList = LayoutList;
   readonly BarChart2 = BarChart2;
+  readonly Check = Check;
 
   // ---- Reports ----
   reportSubTab = signal<'monthly'>('monthly');
@@ -149,6 +157,14 @@ export class DashboardComponent implements OnInit {
   reportGroupId = signal('-1');
   reportDateFrom = signal(new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0]);
   reportDateTo = signal(new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).toISOString().split('T')[0]);
+
+  // Report detail panel
+  isReportDetailOpen = signal(false);
+  reportDetailRow = signal<MonthlyReportResult | null>(null);
+  reportDetailData = signal<MonthlyReportDetailsResponse | null>(null);
+  reportDetailGrouped = signal<GroupedExpense[]>([]);
+  isReportDetailLoading = signal(false);
+  reportDetailError = signal('');
 
   isMobileNavOpen = signal(false);
 
@@ -205,6 +221,59 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadGroups();
+    this.startSyncJob();
+  }
+
+  ngOnDestroy(): void {
+    if (this.syncInterval) clearInterval(this.syncInterval);
+  }
+
+  openReportDetail(row: MonthlyReportResult): void {
+    this.reportDetailRow.set(row);
+    this.reportDetailData.set(null);
+    this.reportDetailGrouped.set([]);
+    this.reportDetailError.set('');
+    this.isReportDetailLoading.set(true);
+    this.isReportDetailOpen.set(true);
+
+    const userId = this.authService.currentUserId();
+    this.reportService.getMonthlyReportDetails({
+      userId: Number(userId),
+      groupId: String(row.group_id),
+      dateFrom: this.reportDateFrom() || undefined,
+      dateTo: this.reportDateTo() || undefined,
+    }).subscribe({
+      next: (data) => {
+        this.reportDetailData.set(data);
+        this.reportDetailGrouped.set(this.reportService.groupExpenseDetails(data.lstExpensesDetails));
+        this.isReportDetailLoading.set(false);
+      },
+      error: (e: unknown) => {
+        console.error('Failed to load report details', e);
+        this.reportDetailError.set('Failed to load details. Please try again.');
+        this.isReportDetailLoading.set(false);
+      },
+    });
+  }
+
+  closeReportDetail(): void {
+    this.isReportDetailOpen.set(false);
+    this.reportDetailRow.set(null);
+  }
+
+  formatReportDate(raw: string): string {
+    if (!raw) return '';
+    const d = new Date(raw);
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  }
+
+  private startSyncJob(): void {
+    this.callSync();
+    this.syncInterval = setInterval(() => this.callSync(), 10 * 60 * 1000);
+  }
+
+  private callSync(): void {
+    this.expenseService.syncExpenses().subscribe({ error: (e: unknown) => console.error('Sync failed', e) });
   }
 
   setActiveTab(tab: string) {
@@ -227,7 +296,9 @@ export class DashboardComponent implements OnInit {
     this.monthlyReportResults.set([]);
 
     const gid = this.reportGroupId();
+    const userId = this.authService.currentUserId();
     this.reportService.getMonthlyReport({
+      userId: Number(userId),
       groupId: gid === '-1' ? '-1' : gid,
       dateFrom: this.reportDateFrom() || undefined,
       dateTo: this.reportDateTo() || undefined,
@@ -864,11 +935,15 @@ export class DashboardComponent implements OnInit {
   loadGroups(): void {
     const userId = this.authService.currentUserId();
     const userData = this.authService.currentUserData();
-    
-    // Set username if available
-    if (userData) {
-      this.username.set(userData.name || userData.username || 'User');
-    }
+    const profile = this.authService.userDetails();
+
+    const fullName = profile
+      ? [profile.firstName, profile.lastName].filter(Boolean).join(' ').trim()
+      : '';
+    this.username.set(
+      fullName || profile?.name || profile?.username ||
+      userData?.name || userData?.username || 'User'
+    );
 
     if (!userId) {
       this.router.navigate(['/login']);

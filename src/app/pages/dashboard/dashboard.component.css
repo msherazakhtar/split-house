@@ -922,6 +922,428 @@
 }
 
 /* ===================================================
+   REPORT TABLE — VIEW BUTTON
+   =================================================== */
+.report-table-header,
+.report-row {
+  grid-template-columns: 2fr 100px 180px 160px 90px;
+}
+
+.report-col-action { display: flex; justify-content: flex-end; }
+
+.btn-view-report {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #111;
+  background: #f2f1ee;
+  border: 1px solid #e0dfdc;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+
+.btn-view-report:hover {
+  background: #e8e7e4;
+  border-color: #ccc;
+}
+
+/* ===================================================
+   REPORT DETAIL PANEL
+   =================================================== */
+.report-detail-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  width: 520px;
+  max-width: 100vw;
+  background: #fff;
+  border-left: 1px solid #e8e8e6;
+  z-index: 900;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: -8px 0 40px rgba(0, 0, 0, 0.08);
+}
+
+.report-detail-panel.open {
+  transform: translateX(0);
+}
+
+.rdp-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid #ebebeb;
+  flex-shrink: 0;
+  gap: 1rem;
+  background: #fff;
+}
+
+.rdp-header-identity {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  min-width: 0;
+}
+
+.rdp-avatar {
+  width: 42px;
+  height: 42px;
+  background: #111;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Syne', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.rdp-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #111;
+  margin: 0 0 0.2rem;
+}
+
+.rdp-subtitle {
+  font-size: 0.78rem;
+  color: #aaa;
+  font-weight: 500;
+}
+
+.rdp-state {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  color: #888;
+  font-size: 0.9rem;
+  padding: 2rem;
+}
+
+.rdp-state-error {
+  color: #c0392b;
+}
+
+.rdp-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.rdp-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.rdp-section-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #aaa;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.rdp-count-badge {
+  background: #f0efed;
+  color: #666;
+  border-radius: 20px;
+  padding: 0.1rem 0.5rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+/* ── Member Balance Cards ── */
+.rdp-balances-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.rdp-balance-card {
+  background: #fff;
+  border: 1px solid #e8e8e6;
+  border-radius: 14px;
+  padding: 1.1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  transition: box-shadow 0.15s;
+}
+
+.rdp-balance-card:hover { box-shadow: 0 3px 14px rgba(0,0,0,0.07); }
+
+.rdp-balance-positive { border-left: 4px solid #22c55e; }
+.rdp-balance-negative { border-left: 4px solid #ef4444; }
+.rdp-balance-neutral  { border-left: 4px solid #e8e8e6; }
+
+/* Identity row */
+.rdp-balance-top {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.rdp-balance-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #e8e8e6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #555;
+  flex-shrink: 0;
+}
+
+.rdp-av-positive { background: #dcfce7; color: #15803d; }
+.rdp-av-negative { background: #fee2e2; color: #b91c1c; }
+
+.rdp-balance-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+
+.rdp-balance-name  { font-size: 0.9rem; font-weight: 700; color: #111; }
+.rdp-balance-email { font-size: 0.72rem; color: #aaa; }
+
+.rdp-status-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.25rem 0.65rem;
+  border-radius: 20px;
+  white-space: nowrap;
+  letter-spacing: 0.02em;
+  flex-shrink: 0;
+}
+
+.rdp-badge-gets  { background: #dcfce7; color: #15803d; }
+.rdp-badge-owes  { background: #fee2e2; color: #b91c1c; }
+.rdp-badge-clear { background: #f0efed; color: #666; }
+
+/* Net balance row */
+.rdp-net-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 0.7rem 0.9rem;
+  background: #faf9f7;
+  border-radius: 9px;
+  border: 1px solid #efefed;
+}
+
+.rdp-net-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #aaa;
+}
+
+.rdp-net-amount {
+  font-size: 1.3rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.rdp-amount-positive { color: #16a34a; }
+.rdp-amount-negative { color: #dc2626; }
+
+/* Three-column breakdown */
+.rdp-breakdown-row {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  border: 1px solid #e8e8e6;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.rdp-breakdown-cell {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.65rem 0.5rem;
+  gap: 0.15rem;
+  text-align: center;
+}
+
+.rdp-breakdown-divider {
+  width: 1px;
+  background: #e8e8e6;
+  flex-shrink: 0;
+}
+
+.rdp-bd-label {
+  font-size: 0.67rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #bbb;
+}
+
+.rdp-bd-value {
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.rdp-bd-green { color: #16a34a; }
+.rdp-bd-red   { color: #dc2626; }
+.rdp-bd-gray  { color: #aaa; }
+
+.rdp-bd-hint {
+  font-size: 0.67rem;
+  color: #bbb;
+  white-space: nowrap;
+}
+
+/* ── Expense Breakdown Cards ── */
+.rdp-expenses-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.rdp-expense-card {
+  background: #fff;
+  border: 1px solid #e8e8e6;
+  border-radius: 12px;
+  padding: 1rem 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  transition: box-shadow 0.15s;
+}
+
+.rdp-expense-card:hover {
+  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+}
+
+.rdp-expense-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.rdp-expense-left {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.rdp-expense-cat {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #aaa;
+}
+
+.rdp-expense-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #111;
+  margin: 0;
+}
+
+.rdp-expense-date {
+  font-size: 0.76rem;
+  color: #aaa;
+}
+
+.rdp-expense-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.2rem;
+  flex-shrink: 0;
+}
+
+.rdp-expense-total {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #111;
+}
+
+.rdp-expense-per-head {
+  font-size: 0.75rem;
+  color: #888;
+}
+
+.rdp-settled-pill {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.2rem 0.6rem;
+  border-radius: 20px;
+  margin-top: 0.15rem;
+}
+
+.rdp-pill-done    { background: #dcfce7; color: #15803d; }
+.rdp-pill-partial { background: #fef9c3; color: #a16207; }
+
+.rdp-members-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.rdp-member-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.rdp-chip-settled {
+  background: #dcfce7;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+}
+
+.rdp-chip-pending {
+  background: #faf9f7;
+  color: #666;
+  border: 1px solid #e8e8e6;
+}
+
+.rdp-member-init {
+  font-weight: 700;
+  font-size: 0.7rem;
+}
+
+/* ===================================================
    GROUP MEMBERS PANEL
    =================================================== */
 .panel-backdrop {

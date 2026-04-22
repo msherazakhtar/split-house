@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpContext } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
+import { SKIP_AUTH_LOGOUT } from './auth.interceptor';
 
 export interface ExpenseSummaryParams {
   category?: string;
@@ -123,6 +124,8 @@ export class ExpenseService {
   }
 
   syncExpenses(): Observable<void> {
-    return this.http.get<void>(`${environment.apiUrl}/expense/sync`, {});
+    return this.http.get<void>(`${environment.apiUrl}/expense/sync`, {
+      context: new HttpContext().set(SKIP_AUTH_LOGOUT, true),
+    });
   }
 }

@@ -951,6 +951,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
 
     this.isLoading.set(true);
+    this.error.set('');
     this.groupService.getGroupsByUser(userId).subscribe({
       next: (data) => {
         this.groups.set(data || []);

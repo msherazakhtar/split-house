@@ -3,6 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, tap, switchMap, map, of } from 'rxjs';
 import { environment } from '../../environments/environment';
 
+const STORAGE_KEYS = ['jwt_token', 'user_profile'] as const;
+
 @Injectable({
   providedIn: 'root'
 })
@@ -19,24 +21,40 @@ export class AuthService {
     this.checkTokenAndSetState();
   }
 
+  private isTokenExpired(token: string): boolean {
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
+      if (!payload.exp) return false;
+      return Date.now() >= payload.exp * 1000;
+    } catch {
+      return true;
+    }
+  }
+
+  private clearAuthState(): void {
+    STORAGE_KEYS.forEach((k) => localStorage.removeItem(k));
+    this.isAuthenticated.set(false);
+    this.currentUserId.set(null);
+    this.currentUserData.set(null);
+    this.userDetails.set(null);
+  }
+
   private checkTokenAndSetState(): void {
     const token = localStorage.getItem('jwt_token');
-    if (token) {
+    if (token && !this.isTokenExpired(token)) {
       this.isAuthenticated.set(true);
       this.decodeAndSetUser(token);
 
-      // Load persistent user profile
       const storedProfile = localStorage.getItem('user_profile');
       if (storedProfile) {
         try {
           this.userDetails.set(JSON.parse(storedProfile));
-        } catch(e) {}
+        } catch {
+          localStorage.removeItem('user_profile');
+        }
       }
     } else {
-      this.isAuthenticated.set(false);
-      this.currentUserId.set(null);
-      this.currentUserData.set(null);
-      this.userDetails.set(null);
+      this.clearAuthState();
     }
   }
 
@@ -100,12 +118,7 @@ export class AuthService {
   }
 
   logout() {
-    localStorage.removeItem('jwt_token');
-    localStorage.removeItem('user_profile');
-    this.isAuthenticated.set(false);
-    this.currentUserId.set(null);
-    this.currentUserData.set(null);
-    this.userDetails.set(null);
+    this.clearAuthState();
   }
 
   getToken(): string | null {

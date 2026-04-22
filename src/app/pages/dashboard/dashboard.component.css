@@ -3471,3 +3471,110 @@
     padding: 1rem 1.1rem;
   }
 }
+
+/* ============================================================
+   REPORT — RESPONSIVE
+   ============================================================ */
+
+/* Report detail panel: full-width on tablet and below */
+@media (max-width: 768px) {
+  .report-detail-panel {
+    width: 100vw;
+    border-left: none;
+    border-top: 1px solid #e8e8e6;
+  }
+}
+
+/* Report table → card layout on mobile */
+@media (max-width: 640px) {
+  /* Hide the header row entirely */
+  .report-table-header {
+    display: none;
+  }
+
+  /* Each row becomes a card */
+  .report-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    padding: 1rem 1.1rem;
+    border-bottom: 1px solid #f0efed;
+  }
+
+  /* Group cell stays the same (flex row with avatar) */
+  .report-col-group {
+    width: 100%;
+  }
+
+  /* Members badge hidden — already shown as secondary text in group cell */
+  .report-col-members {
+    display: none;
+  }
+
+  /* Amount and avg sit side-by-side */
+  .report-col-amount,
+  .report-col-avg {
+    text-align: left;
+    font-size: 0.9rem;
+  }
+
+  .report-col-amount::before {
+    content: 'Total: ';
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #aaa;
+    margin-right: 0.25rem;
+  }
+
+  .report-col-avg::before {
+    content: 'Avg/member: ';
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #aaa;
+    margin-right: 0.25rem;
+  }
+
+  /* View button full-width */
+  .report-col-action {
+    justify-content: stretch;
+  }
+
+  .btn-view-report {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Report detail panel body padding tighter on small screens */
+  .rdp-body {
+    padding: 1rem;
+  }
+
+  .rdp-header {
+    padding: 1rem 1.1rem;
+  }
+
+  /* Net amount smaller so it doesn't overflow */
+  .rdp-net-amount {
+    font-size: 1.1rem;
+  }
+
+  /* Breakdown row wraps on very small screens */
+  .rdp-breakdown-row {
+    flex-wrap: wrap;
+  }
+
+  .rdp-breakdown-divider {
+    display: none;
+  }
+
+  .rdp-breakdown-cell {
+    flex: 1 1 30%;
+    border: 1px solid #e8e8e6;
+    border-radius: 8px;
+    margin: 0.15rem;
+  }
+}

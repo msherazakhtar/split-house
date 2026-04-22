@@ -16,7 +16,7 @@ This file provides context and commands for development in the **SplitHouse** pr
 ## Code Style and Guidelines
 - **Framework**: Angular 21
 - **Language**: TypeScript (Strict mode enabled)
-- **Styling**: Vanilla CSS with custom properties, Glassmorphism, and Flexbox/Grid. Avoid Tailwind CSS unless explicitly requested.
+- **Styling**: Vanilla CSS with custom properties, Glassmorphism, and Flexbox/Grid. Avoid Tailwind CSS unless explicitly requested. Responsive Design is a must.
 - **Formatting**: 
   - Use Prettier for all files (defined in `.prettierrc`).
   - Single quotes for strings: `true`

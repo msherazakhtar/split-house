@@ -1,6 +1,7 @@
-import { Component, OnInit, signal, HostListener } from '@angular/core';
+import { Component, OnInit, signal, HostListener, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { SwUpdate } from '@angular/service-worker';
 
 const DISMISSED_KEY = 'pwa_prompt_dismissed_until';
 const DISMISS_DAYS = 7;
@@ -16,6 +17,7 @@ export class App implements OnInit {
   isIOS = signal(false);
 
   private deferredPrompt: any = null;
+  private swUpdate = inject(SwUpdate);
 
   @HostListener('window:beforeinstallprompt', ['$event'])
   onBeforeInstallPrompt(event: Event) {
@@ -27,6 +29,15 @@ export class App implements OnInit {
   }
 
   ngOnInit() {
+    if (this.swUpdate.isEnabled) {
+      this.swUpdate.versionUpdates.subscribe((evt) => {
+        if (evt.type === 'VERSION_READY') {
+          document.location.reload();
+        }
+      });
+      this.swUpdate.checkForUpdate();
+    }
+
     // Don't show if already running as installed PWA
     if (window.matchMedia('(display-mode: standalone)').matches || (navigator as any).standalone) {
       return;

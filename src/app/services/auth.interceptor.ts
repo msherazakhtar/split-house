@@ -1,19 +1,22 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
+import { catchError, throwError } from 'rxjs';
 import { AuthService } from './auth.service';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
   const token = authService.getToken();
 
-  if (token) {
-    // Clone the request and append the Authorization header
-    const clonedReq = req.clone({
-      headers: req.headers.set('Authorization', `Bearer ${token}`),
-    });
-    return next(clonedReq);
-  }
+  const outgoing = token
+    ? req.clone({ headers: req.headers.set('Authorization', `Bearer ${token}`) })
+    : req;
 
-  // If there's no token, just forward the original request
-  return next(req);
+  return next(outgoing).pipe(
+    catchError((err) => {
+      if (err.status === 401 || err.status === 403) {
+        authService.logout();
+      }
+      return throwError(() => err);
+    }),
+  );
 };

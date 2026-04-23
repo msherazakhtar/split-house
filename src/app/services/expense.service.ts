@@ -8,6 +8,8 @@ export interface ExpenseSummaryParams {
   category?: string;
   dateFrom?: string;
   dateTo?: string;
+  pageNumber?: number;
+  pageSize?: number;
 }
 
 export interface ExpenseSummaryRequest {
@@ -31,6 +33,7 @@ export interface Expense {
   splitType?: string;
   createdAt?: string;
   createdBy?: string;
+  totalPages?: string;
   [key: string]: any;
 }
 
@@ -118,6 +121,8 @@ export class ExpenseService {
         { paramName: 'category', paramValue: params.category ?? '' },
         { paramName: 'dateFrom', paramValue: params.dateFrom ?? '' },
         { paramName: 'dateTo', paramValue: params.dateTo ?? '' },
+        { paramName: 'pageNumber', paramValue: String(params.pageNumber ?? 1) },
+        { paramName: 'pageSize', paramValue: String(params.pageSize ?? 10) },
       ],
     };
     return this.http.post<Expense[]>(`${this.baseUrl}/summary`, body);

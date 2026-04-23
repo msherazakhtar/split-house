@@ -3578,3 +3578,99 @@
     margin: 0.15rem;
   }
 }
+
+/* ===================================================
+   EXPENSE PAGINATION
+   =================================================== */
+.expense-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.pagination-left {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.pagination-right {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.page-size-label {
+  font-size: 0.8125rem;
+  color: #666;
+  font-family: 'Inter', sans-serif;
+  white-space: nowrap;
+}
+
+.page-size-select {
+  height: 2rem;
+  padding: 0 0.5rem;
+  border: 1px solid #e0e0de;
+  border-radius: 6px;
+  background: transparent;
+  color: #444;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.page-size-select:hover {
+  border-color: #aaa;
+}
+
+.page-size-select:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.page-info {
+  font-size: 0.8125rem;
+  color: #888;
+  font-family: 'Inter', sans-serif;
+  margin-left: 0.25rem;
+  white-space: nowrap;
+}
+
+.page-btn {
+  min-width: 2rem;
+  height: 2rem;
+  padding: 0 0.5rem;
+  border: 1px solid #e0e0de;
+  border-radius: 6px;
+  background: transparent;
+  color: #444;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  line-height: 1;
+}
+
+.page-btn:hover:not(:disabled) {
+  border-color: #aaa;
+  background: #f5f5f4;
+}
+
+.page-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.page-btn-active {
+  background: #111;
+  color: #fff;
+  border-color: #111;
+}

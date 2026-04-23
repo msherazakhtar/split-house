@@ -314,6 +314,44 @@
               </div>
             }
           </div>
+
+          <!-- Pagination -->
+          <div class="expense-pagination">
+            <div class="pagination-left">
+              <label class="page-size-label">Rows per page</label>
+              <select class="page-size-select" [(ngModel)]="expensePageSize" name="expensePageSize" (ngModelChange)="onExpensePageSizeChange()" [disabled]="isExpensesLoading()">
+                <option [ngValue]="5">5</option>
+                <option [ngValue]="10">10</option>
+                <option [ngValue]="20">20</option>
+                <option [ngValue]="50">50</option>
+              </select>
+            </div>
+
+            <div class="pagination-right">
+              <button
+                class="page-btn"
+                [disabled]="expensePageNumber() === 1 || isExpensesLoading()"
+                (click)="goToExpensePage(expensePageNumber() - 1)"
+              >&#8592;</button>
+
+              @for (page of [].constructor(expenseTotalPages()); track $index) {
+                <button
+                  class="page-btn"
+                  [class.page-btn-active]="expensePageNumber() === $index + 1"
+                  [disabled]="isExpensesLoading()"
+                  (click)="goToExpensePage($index + 1)"
+                >{{ $index + 1 }}</button>
+              }
+
+              <button
+                class="page-btn"
+                [disabled]="expensePageNumber() === expenseTotalPages() || isExpensesLoading()"
+                (click)="goToExpensePage(expensePageNumber() + 1)"
+              >&#8594;</button>
+
+              <span class="page-info">{{ expensePageNumber() }} / {{ expenseTotalPages() }}</span>
+            </div>
+          </div>
         }
       </div>
 

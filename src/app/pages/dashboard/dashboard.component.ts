@@ -64,6 +64,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
   expenseDateTo = signal('2026-12-30');
   expenseCategory = signal('');
 
+  // Pagination
+  expensePageNumber = signal(1);
+  expensePageSize = signal(10);
+  expenseTotalPages = signal(1);
+
   // Expense View Panel
   isExpenseViewOpen = signal(false);
   expenseViewData = signal<ExpenseDetailResponse | null>(null);
@@ -327,10 +332,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
         category: this.expenseCategory(),
         dateFrom: this.expenseDateFrom(),
         dateTo: this.expenseDateTo(),
+        pageNumber: this.expensePageNumber(),
+        pageSize: this.expensePageSize(),
       })
       .subscribe({
         next: (data) => {
-          this.expenses.set(Array.isArray(data) ? data : []);
+          const list = Array.isArray(data) ? data : [];
+          this.expenses.set(list);
+          const total = list.length > 0 ? parseInt(list[0].totalPages ?? '1', 10) : 1;
+          this.expenseTotalPages.set(isNaN(total) || total < 1 ? 1 : total);
           this.isExpensesLoading.set(false);
         },
         error: (err) => {
@@ -343,6 +353,19 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   applyExpenseFilters() {
     this.expenses.set([]);
+    this.expensePageNumber.set(1);
+    this.loadExpenseSummary();
+  }
+
+  goToExpensePage(page: number) {
+    const total = this.expenseTotalPages();
+    if (page < 1 || page > total) return;
+    this.expensePageNumber.set(page);
+    this.loadExpenseSummary();
+  }
+
+  onExpensePageSizeChange() {
+    this.expensePageNumber.set(1);
     this.loadExpenseSummary();
   }
 

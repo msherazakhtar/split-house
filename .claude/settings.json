@@ -6,5 +6,9 @@
       "Bash(npm list *)",
       "Bash(npx sharp-cli *)"
     ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "bash \"E:/Projects/Projects/split-house/.claude/statusline-command.sh\""
   }
 }

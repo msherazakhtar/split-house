@@ -11,7 +11,9 @@
       "Bash(where magick *)",
       "Bash(where convert *)",
       "Bash(where inkscape *)",
-      "Bash(npm show *)"
+      "Bash(npm show *)",
+      "Bash(bash --version)",
+      "Bash(jq --version)"
     ]
   }
 }

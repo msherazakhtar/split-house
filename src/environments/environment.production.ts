@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://expense-tracker-z1q7.onrender.com'
+  apiUrl: 'http://109.199.103.223:5555'
 };

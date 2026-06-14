@@ -16,6 +16,20 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'signup',
+    loadComponent: () =>
+      import('./pages/signup/signup.component').then(
+        (m) => m.SignupComponent
+      ),
+  },
+  {
+    path: 'verify-email',
+    loadComponent: () =>
+      import('./pages/verify-email/verify-email.component').then(
+        (m) => m.VerifyEmailComponent
+      ),
+  },
+  {
     path: 'dashboard',
     loadComponent: () =>
       import('./pages/dashboard/dashboard.component').then(

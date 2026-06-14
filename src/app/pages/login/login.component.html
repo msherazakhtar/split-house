@@ -128,7 +128,11 @@
         @if (errorMessage()) {
           <div class="error-msg">
             <lucide-icon [img]="TriangleAlert" [size]="13" [strokeWidth]="2"></lucide-icon>
-            {{ errorMessage() }}
+            @if (isUnverifiedError()) {
+              <span>Your email is not verified. Please verify your email via <button type="button" class="verify-link" (click)="resendOtpAndVerify()" [disabled]="isLoading()">OTP</button>.</span>
+            } @else {
+              <span>{{ errorMessage() }}</span>
+            }
           </div>
         }
 
@@ -151,8 +155,7 @@
       </div>
 
       <p class="signup-prompt">
-        Contact your housemate to get an invite, or
-        <a routerLink="/" class="signup-link">learn more &rarr;</a>
+        <a routerLink="/signup" class="signup-link">Sign up here &rarr;</a>
       </p>
 
     </div>

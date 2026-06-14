@@ -11,7 +11,7 @@ const STORAGE_KEYS = ['jwt_token', 'user_profile'] as const;
 export class AuthService {
   private apiUrl = `${environment.apiUrl}/auth/login`;
   private userApiUrl = `${environment.apiUrl}/user`;
-  
+
   isAuthenticated = signal(false);
   currentUserId = signal<number | string | null>(null);
   currentUserData = signal<any>(null);
@@ -64,9 +64,9 @@ export class AuthService {
       const payloadBase64 = token.split('.')[1];
       const decodedJson = atob(payloadBase64.replace(/-/g, '+').replace(/_/g, '/'));
       const payload = JSON.parse(decodedJson);
-      
+
       this.currentUserData.set(payload);
-      
+
       // Look for userId, id, or sub in the payload
       const userId = payload.userId || payload.id || payload.sub;
       if (userId) {
@@ -92,7 +92,7 @@ export class AuthService {
         } else if (response && response.accessToken) {
           token = response.accessToken;
         }
-        
+
         if (token) {
           localStorage.setItem('jwt_token', token);
           this.checkTokenAndSetState();
@@ -119,6 +119,27 @@ export class AuthService {
 
   logout() {
     this.clearAuthState();
+  }
+
+  register(firstName: string, lastName: string, email: string, password: string): Observable<any> {
+    return this.http.post<any>(`${environment.apiUrl}/auth/register`, {
+      firstName,
+      lastName,
+      password,
+      email
+    });
+  }
+
+  resendOtp(email: string): Observable<any> {
+    return this.http.post<any>(`${environment.apiUrl}/auth/generateNewOtp`, null, {
+      params: { email }
+    });
+  }
+
+  verifyOtp(email: string, otp: string): Observable<any> {
+    return this.http.post<any>(`${environment.apiUrl}/user/verify`, null, {
+      params: { email, otp }
+    });
   }
 
   getToken(): string | null {

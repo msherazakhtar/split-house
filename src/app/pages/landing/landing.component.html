@@ -16,7 +16,7 @@
       </ul>
       <div class="nav-actions">
         <a routerLink="/protectedLoginBeta" class="btn btn-outline-dark">Log in</a>
-        <a href="#waitlist" class="btn btn-dark">Start for free</a>
+        <a routerLink="/signup" class="btn btn-dark">Start for free</a>
       </div>
     </div>
   </nav>
@@ -33,7 +33,7 @@
           the mental math at midnight.
         </p>
         <div class="hero-actions">
-          <a href="#waitlist" class="btn btn-dark btn-lg">Start splitting for free &rarr;</a>
+          <a routerLink="/signup" class="btn btn-dark btn-lg">Start splitting for free &rarr;</a>
           <a href="#how-it-works" class="btn btn-outline-dark btn-lg">See how it works</a>
         </div>
       </div>
@@ -70,7 +70,7 @@
               </div>
             </div>
           </div>
-          <a href="#waitlist" class="app-card-cta">Settle Up &rarr;</a>
+          <a routerLink="/signup" class="app-card-cta">Settle Up &rarr;</a>
         </div>
       </div>
     </div>
@@ -108,7 +108,7 @@
         }
       </div>
       <div class="section-cta anim" style="--d:80ms">
-        <a href="#waitlist" class="btn btn-dark btn-lg">Get started, it's free &rarr;</a>
+          <a routerLink="/signup" class="btn btn-dark btn-lg">Get started, it's free &rarr;</a>
       </div>
     </div>
   </section>
@@ -183,8 +183,8 @@
     </div>
   </section>
 
-  <!-- CTA / WAITLIST -->
-  <section class="cta-section" id="waitlist">
+  <!-- CTA / SIGNUP -->
+  <section class="cta-section" id="signup-cta">
     <div class="container">
       <div class="cta-inner">
         <h2 class="cta-title anim">Bas try kar ke dekho.<br>Seriously.</h2>
@@ -192,49 +192,12 @@
           Free to use, takes two minutes to set up, and your flatmates will actually
           thank you for introducing it. (Probably.)
         </p>
-        <p class="cta-existing-user anim" style="--d:120ms">
+        <div class="cta-actions anim" style="--d:120ms; margin-bottom: 2rem;">
+          <a routerLink="/signup" class="btn btn-white btn-lg">Get started, it's free &rarr;</a>
+        </div>
+        <p class="cta-existing-user anim" style="--d:160ms">
           Already have an account? <a routerLink="/protectedLoginBeta" class="cta-login-link">Log in here</a>
         </p>
-        <form class="waitlist-form" (submit)="submitWaitlist($event)">
-          @if (waitlistState() !== 'success') {
-            <div class="waitlist-row">
-              <input
-                type="email"
-                [(ngModel)]="email"
-                name="email"
-                placeholder="Enter your email address"
-                class="waitlist-input"
-                required
-                [disabled]="waitlistState() === 'loading'"
-              />
-              <button type="submit" class="btn btn-white waitlist-btn" [disabled]="waitlistState() === 'loading'">
-                @if (waitlistState() !== 'loading') {
-                  <span>Get started, it's free</span>
-                } @else {
-                  <span>Joining...</span>
-                }
-              </button>
-            </div>
-          }
-          @if (waitlistState() === 'success') {
-            <div class="waitlist-success">
-              <div class="success-icon">
-                <lucide-icon [img]="Check" [size]="20" [strokeWidth]="2.5"></lucide-icon>
-              </div>
-              <p>You're on the list. We'll be in touch.</p>
-              <p>Follow our WhatsApp channel for launch updates.</p>
-              <a href="https://whatsapp.com/channel/0029Vb6Ds1K11ulT71vtIF0S" target="_blank"
-                 class="btn btn-white" style="background:#25D366;color:#fff;border:none;">
-                Join WhatsApp Channel
-              </a>
-            </div>
-          }
-          @if (waitlistState() === 'error') {
-            <div class="waitlist-error">
-              {{ waitlistErrorMsg }}
-            </div>
-          }
-        </form>
       </div>
     </div>
   </section>

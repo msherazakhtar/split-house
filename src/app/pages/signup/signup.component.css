@@ -1,5 +1,5 @@
 /* ===================================================
-   LOGIN PAGE — LIGHT, MINIMAL
+   SIGNUP PAGE — LIGHT, MINIMAL
    =================================================== */
 
 .login-page {
@@ -139,7 +139,6 @@
 
 .av-1 { background: #6366f1; }
 .av-2 { background: #ec4899; }
-.av-3 { background: #10b981; }
 
 .bc-info {
   flex: 1;
@@ -222,6 +221,12 @@
   gap: 1.1rem;
 }
 
+.name-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
 .field {
   display: flex;
   flex-direction: column;
@@ -233,24 +238,6 @@
   font-weight: 600;
   color: #333;
   letter-spacing: 0.01em;
-}
-
-.field-label-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.forgot-link {
-  font-size: 0.78rem;
-  color: #777;
-  text-decoration: none;
-  font-weight: 500;
-  transition: color 0.15s;
-}
-
-.forgot-link:hover {
-  color: #111;
 }
 
 .input-wrap {
@@ -321,31 +308,6 @@
   color: #dc2626;
   font-weight: 500;
   animation: shake 0.32s ease;
-}
-
-.verify-link {
-  background: none;
-  border: none;
-  padding: 0;
-  margin: 0;
-  font-family: inherit;
-  font-size: inherit;
-  font-weight: 700;
-  color: #b91c1c;
-  text-decoration: underline;
-  cursor: pointer;
-  display: inline;
-  transition: opacity 0.15s;
-}
-
-.verify-link:hover {
-  opacity: 0.8;
-  color: #991b1b;
-}
-
-.verify-link:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
 }
 
 @keyframes shake {
@@ -489,5 +451,10 @@
 
   .login-form-panel {
     padding: 2rem 1.25rem 2.5rem;
+  }
+
+  .name-row {
+    grid-template-columns: 1fr;
+    gap: 1.1rem;
   }
 }

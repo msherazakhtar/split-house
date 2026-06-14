@@ -135,36 +135,4 @@ export class LandingComponent implements AfterViewInit {
     );
     els.forEach((el) => observer.observe(el));
   }
-
-  // Waitlist State
-  email = '';
-  waitlistState = signal<'idle' | 'loading' | 'success' | 'error'>('idle');
-  waitlistErrorMsg = '';
-
-  async submitWaitlist(event: Event) {
-    event.preventDefault();
-    if (!this.email) return;
-
-    this.waitlistState.set('loading');
-    this.waitlistErrorMsg = '';
-
-    const webhookUrl =
-      'https://script.google.com/macros/s/AKfycbzaWqcggCyv6yHi11Fl_FVkwtTcXpNb1dTWbQ4_aP_Ld5qszU7iQVnZj1vMHHa4X22-DQ/exec';
-
-    try {
-      fetch(webhookUrl, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({ email: this.email }),
-      });
-
-      this.waitlistState.set('success');
-      this.email = '';
-    } catch (err) {
-      console.error('Waitlist submission error:', err);
-      this.waitlistState.set('error');
-      this.waitlistErrorMsg = 'Failed to submit. Please try again later.';
-    }
-  }
 }

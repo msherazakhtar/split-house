@@ -1,5 +1,5 @@
 /* ===================================================
-   LOGIN PAGE — LIGHT, MINIMAL
+   VERIFICATION PAGE — LIGHT, MINIMAL
    =================================================== */
 
 .login-page {
@@ -138,8 +138,6 @@
 }
 
 .av-1 { background: #6366f1; }
-.av-2 { background: #ec4899; }
-.av-3 { background: #10b981; }
 
 .bc-info {
   flex: 1;
@@ -161,13 +159,6 @@
 .bc-time {
   font-size: 0.7rem;
   color: #999;
-}
-
-.bc-amount {
-  font-size: 0.82rem;
-  font-weight: 700;
-  color: #111;
-  flex-shrink: 0;
 }
 
 .bc-settled {
@@ -201,6 +192,22 @@
   margin-bottom: 2rem;
 }
 
+.verification-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  background: #faf8f5;
+  border: 1px solid #e0e0de;
+  margin-bottom: 1.25rem;
+}
+
+.badge-icon {
+  color: #6366f1;
+}
+
 .form-title {
   font-family: 'Instrument Serif', serif;
   font-size: 2.2rem;
@@ -213,6 +220,12 @@
 .form-subtitle {
   font-size: 0.875rem;
   color: #777;
+  line-height: 1.5;
+}
+
+.user-email {
+  color: #111;
+  font-weight: 600;
 }
 
 /* Fields */
@@ -233,24 +246,6 @@
   font-weight: 600;
   color: #333;
   letter-spacing: 0.01em;
-}
-
-.field-label-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.forgot-link {
-  font-size: 0.78rem;
-  color: #777;
-  text-decoration: none;
-  font-weight: 500;
-  transition: color 0.15s;
-}
-
-.forgot-link:hover {
-  color: #111;
 }
 
 .input-wrap {
@@ -291,24 +286,14 @@
   box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.07);
 }
 
-.toggle-pw {
-  position: absolute;
-  right: 0.8rem;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0.2rem;
-  color: #bbb;
-  display: flex;
-  align-items: center;
-  transition: color 0.15s;
+.otp-input {
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: bold;
+  letter-spacing: 0.15em;
+  font-size: 1.1rem;
 }
 
-.toggle-pw:hover {
-  color: #555;
-}
-
-/* Error */
+/* Error Message */
 .error-msg {
   display: flex;
   align-items: center;
@@ -323,29 +308,26 @@
   animation: shake 0.32s ease;
 }
 
-.verify-link {
-  background: none;
-  border: none;
-  padding: 0;
-  margin: 0;
-  font-family: inherit;
-  font-size: inherit;
-  font-weight: 700;
-  color: #b91c1c;
-  text-decoration: underline;
-  cursor: pointer;
-  display: inline;
-  transition: opacity 0.15s;
+/* Success Banner */
+.success-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  border-radius: 8px;
+  padding: 0.75rem 0.9rem;
+  font-size: 0.85rem;
+  color: #047857;
+  font-weight: 500;
+  margin-top: 1rem;
+  line-height: 1.4;
 }
 
-.verify-link:hover {
-  opacity: 0.8;
-  color: #991b1b;
-}
-
-.verify-link:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+.success-only {
+  margin-top: 2rem;
+  padding: 1rem 1.2rem;
+  font-size: 0.9rem;
 }
 
 @keyframes shake {
@@ -425,10 +407,33 @@
   white-space: nowrap;
 }
 
-.signup-prompt {
+.resend-prompt {
   text-align: center;
   font-size: 0.845rem;
   color: #888;
+}
+
+.resend-link {
+  background: none;
+  border: none;
+  color: #111;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  font-family: inherit;
+  font-size: inherit;
+  transition: opacity 0.15s;
+  text-decoration: underline;
+}
+
+.resend-link:hover:not(:disabled) {
+  opacity: 0.65;
+}
+
+.resend-link:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  text-decoration: none;
 }
 
 .signup-link {
@@ -440,6 +445,13 @@
 
 .signup-link:hover {
   opacity: 0.65;
+}
+
+.redirect-notice {
+  margin-top: 1.5rem;
+  text-align: center;
+  font-size: 0.845rem;
+  color: #666;
 }
 
 /* ===================================================

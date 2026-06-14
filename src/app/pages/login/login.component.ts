@@ -24,8 +24,10 @@ export class LoginComponent {
   showPassword = signal(false);
   isLoading = signal(false);
   errorMessage = signal('');
+  isUnverifiedError = signal(false);
+  unverifiedEmail = '';
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router) { }
 
   togglePassword() {
     this.showPassword.update((v) => !v);
@@ -33,13 +35,14 @@ export class LoginComponent {
 
   onSubmit() {
     this.errorMessage.set('');
+    this.isUnverifiedError.set(false);
     if (!this.username || !this.password) {
       this.errorMessage.set('Please fill in all fields.');
       return;
     }
-    
+
     this.isLoading.set(true);
-    
+
     this.authService.login(this.username, this.password).subscribe({
       next: () => {
         this.isLoading.set(false);
@@ -47,13 +50,44 @@ export class LoginComponent {
       },
       error: (err) => {
         this.isLoading.set(false);
-        console.error('Login failed:', err);
-        // We can display a better message depending on err.status
+        console.error('Login failed:', err.error?.Error);
+        
+        const errorMsg = err.error?.Error || '';
         if (err.status === 401 || err.status === 403) {
-          this.errorMessage.set('Invalid username or password.');
+          this.errorMessage.set(errorMsg);
+          if (errorMsg.includes('Your email is not verified. Please verify your email via OTP.')) {
+            this.isUnverifiedError.set(true);
+            this.unverifiedEmail = this.username;
+          }
         } else {
           this.errorMessage.set('An error occurred. Please try again later.');
         }
+      }
+    });
+  }
+
+  resendOtpAndVerify() {
+    if (!this.unverifiedEmail) return;
+
+    this.isLoading.set(true);
+    this.errorMessage.set('');
+
+    this.authService.resendOtp(this.unverifiedEmail).subscribe({
+      next: (res) => {
+        this.isLoading.set(false);
+        // Navigate to /verify-email?email=<email>
+        this.router.navigate(['/verify-email'], {
+          queryParams: { email: this.unverifiedEmail }
+        });
+      },
+      error: (err) => {
+        this.isLoading.set(false);
+        console.error('Failed to generate new OTP:', err);
+        this.errorMessage.set(
+          err.error?.responseMessage ||
+          err.error?.message ||
+          'Failed to resend verification code. Please try again later.'
+        );
       }
     });
   }

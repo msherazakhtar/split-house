@@ -1,0 +1,218 @@
+<div class="login-page">
+
+  <!-- Left panel — branding -->
+  <div class="login-brand">
+
+    <div class="brand-topbar">
+      <a routerLink="/" class="back-link">← Back to home</a>
+      <div class="brand-logo">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2L20.66 7V17L12 22L3.34 17V7L12 2Z"/>
+        </svg>
+        <span>Barabar</span>
+      </div>
+    </div>
+
+    <div class="brand-content">
+      <div class="brand-copy">
+        <h2 class="brand-headline">Join us.<br>Start splitting.</h2>
+        <p class="brand-sub">Set up your account in seconds, invite your housemates, and track flat expenses without any hassle.</p>
+      </div>
+
+      <ul class="brand-features">
+        <li>
+          <span class="feature-dot"></span>
+          Create groups for flatmates
+        </li>
+        <li>
+          <span class="feature-dot"></span>
+          Log shared expenses on the go
+        </li>
+        <li>
+          <span class="feature-dot"></span>
+          Minimize transactions with smart splits
+        </li>
+      </ul>
+
+      <!-- Small visual card illustrating a split receipt -->
+      <div class="brand-card">
+        <div class="brand-card-row">
+          <div class="bc-avatar av-1">S</div>
+          <div class="bc-info">
+            <span class="bc-name">Sheraz started SplitHouse</span>
+            <span class="bc-time">Active now</span>
+          </div>
+          <span class="bc-settled">Setup</span>
+        </div>
+        <div class="brand-card-row">
+          <div class="bc-avatar av-2">T</div>
+          <div class="bc-info">
+            <span class="bc-name">Verification Code Sent</span>
+            <span class="bc-time">Pending</span>
+          </div>
+          <span class="bc-amount" style="color: #6366f1;">Email OTP</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Right panel — form -->
+  <div class="login-form-panel">
+    <div class="form-card">
+
+      <div class="form-header">
+        <h1 class="form-title">Create Account</h1>
+        <p class="form-subtitle">Register to manage your shared house expenses</p>
+      </div>
+
+      <form class="form" (ngSubmit)="onSubmit()" #signupForm="ngForm">
+
+        <!-- First & Last Name row -->
+        <div class="name-row">
+          <div class="field">
+            <label class="field-label" for="firstName">First name</label>
+            <div class="input-wrap">
+              <span class="input-icon">
+                <lucide-icon [img]="User" [size]="15" [strokeWidth]="2"></lucide-icon>
+              </span>
+              <input
+                id="firstName"
+                class="input"
+                type="text"
+                placeholder="Sheraz"
+                [(ngModel)]="firstName"
+                name="firstName"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="lastName">Last name</label>
+            <div class="input-wrap">
+              <span class="input-icon">
+                <lucide-icon [img]="User" [size]="15" [strokeWidth]="2"></lucide-icon>
+              </span>
+              <input
+                id="lastName"
+                class="input"
+                type="text"
+                placeholder="Test"
+                [(ngModel)]="lastName"
+                name="lastName"
+                required
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Email Field -->
+        <div class="field">
+          <label class="field-label" for="email">Email address</label>
+          <div class="input-wrap">
+            <span class="input-icon">
+              <lucide-icon [img]="Mail" [size]="15" [strokeWidth]="2"></lucide-icon>
+            </span>
+            <input
+              id="email"
+              class="input"
+              type="email"
+              placeholder="name@example.com"
+              [(ngModel)]="email"
+              name="email"
+              autocomplete="email"
+              required
+            />
+          </div>
+        </div>
+
+        <!-- Password Field -->
+        <div class="field">
+          <label class="field-label" for="password">Password</label>
+          <div class="input-wrap">
+            <span class="input-icon">
+              <lucide-icon [img]="Lock" [size]="15" [strokeWidth]="2"></lucide-icon>
+            </span>
+            <input
+              id="password"
+              class="input"
+              [type]="showPassword() ? 'text' : 'password'"
+              placeholder="••••••••"
+              [(ngModel)]="password"
+              name="password"
+              autocomplete="new-password"
+              required
+            />
+            <button
+              type="button"
+              class="toggle-pw"
+              (click)="togglePassword()"
+              [attr.aria-label]="showPassword() ? 'Hide password' : 'Show password'"
+            >
+              <lucide-icon [img]="showPassword() ? EyeOff : Eye" [size]="15" [strokeWidth]="2"></lucide-icon>
+            </button>
+          </div>
+        </div>
+
+        <!-- Confirm Password Field -->
+        <div class="field">
+          <label class="field-label" for="confirmPassword">Confirm Password</label>
+          <div class="input-wrap">
+            <span class="input-icon">
+              <lucide-icon [img]="Lock" [size]="15" [strokeWidth]="2"></lucide-icon>
+            </span>
+            <input
+              id="confirmPassword"
+              class="input"
+              [type]="showConfirmPassword() ? 'text' : 'password'"
+              placeholder="••••••••"
+              [(ngModel)]="confirmPassword"
+              name="confirmPassword"
+              autocomplete="new-password"
+              required
+            />
+            <button
+              type="button"
+              class="toggle-pw"
+              (click)="toggleConfirmPassword()"
+              [attr.aria-label]="showConfirmPassword() ? 'Hide password' : 'Show password'"
+            >
+              <lucide-icon [img]="showConfirmPassword() ? EyeOff : Eye" [size]="15" [strokeWidth]="2"></lucide-icon>
+            </button>
+          </div>
+        </div>
+
+        @if (errorMessage()) {
+          <div class="error-msg">
+            <lucide-icon [img]="TriangleAlert" [size]="13" [strokeWidth]="2"></lucide-icon>
+            {{ errorMessage() }}
+          </div>
+        }
+
+        <button type="submit" class="btn-submit" [disabled]="isLoading()">
+          @if (!isLoading()) {
+            <span>Create Account &rarr;</span>
+          } @else {
+            <span class="btn-loader">
+              <span class="spinner"></span> Registering&hellip;
+            </span>
+          }
+        </button>
+
+      </form>
+
+      <div class="form-divider">
+        <span class="divider-line"></span>
+        <span class="divider-label">Already have an account?</span>
+        <span class="divider-line"></span>
+      </div>
+
+      <p class="signup-prompt">
+        <a routerLink="/protectedLoginBeta" class="signup-link">Sign in here &rarr;</a>
+      </p>
+
+    </div>
+  </div>
+
+</div>
